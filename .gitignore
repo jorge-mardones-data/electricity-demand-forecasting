@@ -1,0 +1,29 @@
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Configuración local de VS Code
+.vscode/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Variables de entorno y credenciales
+.env
+.env.*
+
+# Archivos temporales
+*.log
+*.tmp
