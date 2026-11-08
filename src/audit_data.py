@@ -80,7 +80,9 @@ if __name__ == "__main__":
 #No existen saltos distintos de una hora en la serie ortdenada y no existen marcas temporales duplicadas
 
 #¿Cuantos valores ausentes hay en cada pais?
-#DE: 0 NA, ES: 18 NA, FR: 30 NA
+#DE: 0 NA (0%)
+#ES: 18 NA (0.041%)
+#FR: 30 NA (0.068%)
 
 #¿Los valores de demanda tienen razgos plausibles?
 #Los rangos de cada pais son:
@@ -129,3 +131,43 @@ for country, timezone in timezones.items():
 
     print("Cantidad de fechas locales sin hora de verano:")
     print((local_time.dt.month.isin([1, 2, 11, 12])).sum())
+
+#Alemania, España y Francia comparten la misma regulación horaria durante todo el año
+#todos se rigen por el CET (hora de Europa Central) y el CEST (hora de verano de Europa Central)
+#en invierno todos tienen UTC+1 y el verano tienen UTC+2
+#los tres paises cambian horario el mismo día y a la misma hora
+#en el último domingo de Marzo y en el último domingo de Octubre 
+
+#------- Interpretación de los valores faltantes------------
+#Sabemos:
+#Corresponden a la demanda de paises especificos y se concentran en algunos intervalos
+#La ausencia de un pais no implica que también falten datos en los otros
+
+#Hipótesis:
+#Los intervalos podrían reflejar interrupciones en la publicación o recopilacion de datos,
+#problemas con el sistema de reporte o registros que el proveedor no pudo obtener o validar.
+#El hecho de que cada pais tenga ausecias distintas es compatible con problemas especificos
+#de cada serie temporal
+
+#No sabemos:
+#No podemos afirmar que hubo fallas técnicas, problemas de medición o eventos particulares
+#en el sistema electrico. Tampoco podemos concluir que los NA son aleatorios
+#Para establecer la causa es necesario cdocumentacion adicional del proveedor  
+
+#¿Cómo tratar los NAs?
+#Por ahora, no los eliminaremos ni reemplazaremos por estimaciones sin necesidad
+#Por ahora los conservaremos
+
+#¿Por qué importan tanto si son tan pocos?
+#Porque si queremos predecir la demanda a 24 horas (Y_(t+24))
+#si es que falta un instante s, esto puede afectar varias observaciones:
+#Puede afectar como respuesta, como predictor o como referencia de comparacion
+#Por lo tanto, no debemos concluir que solo se pierden 18 observaciones utiles en ES
+#el impacto depende de los predictores y rezagos que se definan
+
+#----------Construccion de la base analítica--------------
+
+#La base original tiene una fila por UTC y una columna de demanda por pais
+#queremos definir la unidad de pais-hora
+#transformaremos la base a un formato largo hora / pais / demanda
+#se espera que queden 43824 x 3 = 131472 filas

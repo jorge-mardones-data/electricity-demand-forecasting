@@ -1,0 +1,4 @@
+model,alpha,ccp_alpha,n_estimators,max_depth,min_samples_leaf,max_features,random_state
+Ridge,316.22777,,,,,,
+Decision Tree,,256.86578,,,,,42.0
+Random Forest,,,200.0,None,2.0,0.7,42.0
