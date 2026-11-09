@@ -266,17 +266,21 @@ def compare_results(snap):
             v = s.max(skipna=True)
             return 0.0 if pd.isna(v) else float(v)
 
+        # se ignoran los tiempos de ajuste, que cambian en cada ejecucion
+        num = [c for c in num if "seconds" not in c and "segundos" not in c]
         dif, rel = 0.0, 0.0
         for c in num:
             a, b = merged[f"{c}_ant"], merged[f"{c}_nuevo"]
             d = (a - b).abs()
             dif = max(dif, vmax(d))
-            rel = max(rel, vmax(d / a.abs().where(a.abs() > 0)))
+            # diferencia relativa a la escala de la columna (evita dividir por valores cercanos a cero)
+            scale = max(vmax(a.abs()), 1e-12)
+            rel = max(rel, vmax(d) / scale)
         same_rows = len(merged) == len(old) == len(new)
         rows.append({"archivo": name, "filas_anteriores": len(old), "filas_nuevas": len(new),
-                     "dif_abs_max": dif, "dif_rel_max": rel,
-                     "estado": "coincide (dif. rel. < 1e-6)" if same_rows and rel < 1e-6 else
-                               ("difiere levemente (< 1 %)" if same_rows and rel < 0.01 else "difiere")})
+                     "dif_abs_max": dif, "dif_rel_max_escala": rel,
+                     "estado": "coincide (< 1e-6 de la escala)" if same_rows and rel < 1e-6 else
+                               ("difiere levemente (< 1 % de la escala)" if same_rows and rel < 0.01 else "difiere")})
     out = pd.DataFrame(rows)
     out.to_csv(RESULTS / "concordancia.csv", index=False)
     return out
