@@ -1,52 +1,72 @@
-(versión inicial, pendiente incluir procedimientos predictivos, la metodología de validación e instrucciones de reproducción)
+# Predicción de la demanda eléctrica horaria a 24 horas (Alemania, España y Francia)
 
-# European Electricity Demand Ferecasting
+Proyecto del curso EYP3407 – Tópicos Aplicados a la Estadística (Pontificia Universidad Católica de Chile), Caso 03, Grupo 03.
 
-## Proyect Overview
+Se estudia cuánto puede mejorarse una predicción estacional de la demanda eléctrica horaria a 24 horas usando la demanda histórica y el calendario. La unidad de análisis es el par país–hora de emisión *t*, y la respuesta es la demanda (MW) en *t*+24. Se comparan dos referencias (persistencia y estacionalidad semanal) con Ridge, un árbol de regresión podado y un Random Forest, con validación temporal en tres ventanas (2015–2018) y una evaluación única en 2019. El informe completo está en `reports/informe/`.
 
-This project investigates how much the prediction of hourly electricity demand can be improved over seasonal forecasting baselines, using data from Germany, Spain and France.
+## Datos
 
-The analisis focuses on 24-hour-ahead demand forecasting using historical electricity demand and calendar information.
+Paquete entregado para el caso 03, basado en *Open Power System Data* (OPSD), serie horaria, versión 2020-10-06 (origen: ENTSO-E Transparency). Cubre Alemania (DE), España (ES) y Francia (FR) entre 2015 y 2019. El archivo original está en `data/raw/` y no se modifica; la base analítica se genera en `data/processed/`.
 
-## Data
+## Estructura del repositorio
 
-The project uses the dataset provided for EYP3407, based on Open Power System Data (OPSD), edition 2020-10-06.
+| Carpeta o archivo | Contenido |
+|---|---|
+| `analisis.py` | Punto de entrada único: reproduce todo el análisis y el informe |
+| `data/raw/`, `data/processed/` | Datos originales y base analítica generada |
+| `src/audit_data.py` | Auditoría de la base original |
+| `src/build_dataset.py` | Base país–hora: respuesta, predictores y periodos |
+| `src/modeling.py` | Particiones, especificación de los modelos y métricas compartidas |
+| `src/run_validation.py` | Validación W1–W3 con los hiperparámetros fijados |
+| `src/make_report_assets.py` | Tablas (`.tex`) y figuras del informe, a partir de `results/` |
+| `notebooks/` | 02 diseño experimental; 03 desarrollo de modelos y búsqueda de hiperparámetros; 04 sensibilidades; 05 reserva 2019, incertidumbre y diagnóstico; 06 análisis complementarios |
+| `results/` | Resultados (CSV) y figuras generados |
+| `reports/informe/` | Informe en LaTeX (XeLaTeX) y su PDF |
+| `docs/protocolo_experimental.md` | Protocolo experimental |
 
-The original data covers Germany, Spain, and France from 2015 to 2019.
+## Reproducción con un solo comando
 
-The original dataset is stored in `data/raw`. Processed dataset are generated through scripts in `src/`.
+Requisitos:
 
-## Repository Structure
+- Python 3.11 (probado con 3.11.9).
+- Una distribución LaTeX con **XeLaTeX** (TeX Live o MiKTeX) para compilar el informe; no se instala con `pip`.
 
-- `data/`: Original and processed datasets.
-- `src/`: Data processing and analysis scripts.
-- `notebooks/`: Exploratory analysis and model development.
-- `reports/`: Project reports and supporting documents.
-
-## Enviroment Setup
-
-Python dependencies are listed in `requirements.txt`.
-
-Install them using:
+Desde la raíz del repositorio:
 
 ```bash
 python -m pip install -r requirements.txt
+python analisis.py
 ```
 
-## Reproducibility
+`analisis.py` ejecuta, en orden: auditoría de los datos, construcción de la base analítica, validación temporal, sensibilidades, evaluación en 2019 con bootstrap y diagnóstico, análisis complementarios, generación de tablas y figuras, y compilación del PDF del informe (`reports/informe/main.pdf`).
 
-Data transformations and analyses are implemented in the project repository.
+Opciones útiles:
 
-Instructions for reproducting the complete analysis will be added as the project develops.
+```bash
+python analisis.py --solo-informe          # solo tablas, figuras y PDF (usa los resultados ya existentes)
+python analisis.py --pasos 1,2,7,8         # pasos elegidos (ver `python analisis.py --help`)
+python analisis.py --sin-pdf               # omite la compilación LaTeX
+python analisis.py --busqueda-completa     # repite la búsqueda de hiperparámetros (notebook 03)
+```
 
-## Academic Context
+Por defecto, la validación usa los hiperparámetros ya seleccionados (en `src/modeling.py` y `results/selected_configurations.csv`). La búsqueda completa de hiperparámetros del Random Forest (notebook 03) tarda varias horas; se activa solo con `--busqueda-completa`.
 
-EYP3407 - Tópicos Aplicados a la Estadística
-Pontificia Universidad Católica de Chile
+### Qué queda registrado en cada ejecución
 
-## Team
+- `results/run_info.json`: sistema, procesador, memoria, versiones de las librerías, tiempo de cada etapa y tiempo total (solo en la ejecución completa).
+- `results/concordancia.csv`: diferencia entre los resultados regenerados y los que había antes de ejecutar (útil para la prueba desde una copia limpia).
+- `results/ejecucion/`: registros de cada paso y copias ejecutadas de los notebooks (no se versionan). Los notebooks originales no se modifican.
 
-Jorge Mardones
-Diego Paredes
-Matías Pineda
-Benjamin Ruiz
+### Notas sobre reproducibilidad
+
+- Las semillas están fijadas (`random_state=42`), pero el Random Forest puede dar predicciones levemente distintas con otra versión de las librerías o con otro equipo. Por eso se fijan las versiones en `requirements.txt` y se registra la concordancia en `results/concordancia.csv`. Las cifras del informe corresponden a la ejecución registrada en `results/run_info.json`.
+- Las tablas de búsqueda de hiperparámetros de Ridge, árbol y Random Forest (`results/ridge_search.csv`, `tree_search.csv`, `rf_search.csv`) se extraen de las salidas guardadas del notebook 03, que no las exporta por sí mismo.
+- Los notebooks pueden ejecutarse también de forma individual desde Jupyter, en el orden 03 → 04 → 05 → 06.
+
+## Contexto académico
+
+EYP3407 – Tópicos Aplicados a la Estadística, Pontificia Universidad Católica de Chile. Profesor: Eloy Alvarado. Ayudante: Andrés Díaz.
+
+## Equipo
+
+Jorge Mardones, Diego Paredes, Matías Pineda y Benjamín Ruiz.

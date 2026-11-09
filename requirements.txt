@@ -1,1 +1,15 @@
-scikit-learn #para trabajar con Ridge
+# Entorno de referencia: Python 3.11.9 (las versiones corresponden a las usadas en la ejecucion del proyecto)
+numpy==2.4.6
+pandas==2.3.3
+scipy==1.17.1
+scikit-learn==1.7.2
+matplotlib==3.10.7
+
+# Ejecucion de los notebooks desde analisis.py
+nbformat==5.10.4
+nbclient==0.10.2
+ipykernel==7.1.0
+jupyter_client==8.7.0
+
+# Nota: compilar el informe requiere ademas una distribucion LaTeX con XeLaTeX (TeX Live o MiKTeX),
+# que no se instala con pip.

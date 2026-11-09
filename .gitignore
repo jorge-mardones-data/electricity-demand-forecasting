@@ -27,3 +27,6 @@ desktop.ini
 # Archivos temporales
 *.log
 *.tmp
+
+# Registros y copias ejecutadas generadas por analisis.py
+results/ejecucion/
