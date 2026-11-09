@@ -23,7 +23,7 @@ Uso:
 
 Salidas:
     results/                       resultados (CSV) y figuras
-    results/run_info.json          entorno, tiempos por etapa y tiempo total (solo en la ejecucion completa)
+    results/run_info.json          entorno, tiempos por etapa y tiempo total (solo si se ejecutan los pasos 1 a 6)
     results/concordancia.csv       diferencia entre los resultados regenerados y los que habia antes de ejecutar
     results/ejecucion/             registros (.log) y copias ejecutadas de los notebooks (no se versionan)
     reports/informe/main.pdf       informe
@@ -301,6 +301,9 @@ def main():
         chosen = {s[0] for s in steps}
     if args.sin_pdf:
         chosen.discard(8)
+    if chosen & {7, 8} and not (INFORME / "main.tex").exists():
+        print("Aviso: reports/informe/ no esta en este repositorio todavia; se omiten los pasos 7 y 8.", flush=True)
+        chosen -= {7, 8}
 
     EJEC.mkdir(parents=True, exist_ok=True)
     prepare_kernel()
@@ -333,7 +336,7 @@ def main():
         info["segundos_totales"] = round(time.perf_counter() - t_total, 1)
         info["fin"] = datetime.now().isoformat(timespec="seconds")
         # el registro de la ejecucion completa queda en results/run_info.json; las parciales no lo pisan
-        full = set(range(1, 8)) <= chosen
+        full = set(range(1, 7)) <= chosen
         target = RESULTS / "run_info.json" if full else EJEC / "run_info_parcial.json"
         target.write_text(json.dumps(info, indent=2, ensure_ascii=False), encoding="utf-8")
         log(f"Registro guardado en {target} (total {info['segundos_totales'] / 60:.1f} min)")
