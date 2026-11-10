@@ -63,6 +63,29 @@ Por defecto, la validación usa los hiperparámetros ya seleccionados (en `src/m
 - Las tablas de búsqueda de hiperparámetros de Ridge, árbol y Random Forest (`results/ridge_search.csv`, `tree_search.csv`, `rf_search.csv`) se extraen de las salidas guardadas del notebook 03, que no las exporta por sí mismo.
 - Los notebooks pueden ejecutarse también de forma individual desde Jupyter, en el orden 03 → 04 → 05 → 06.
 
+## Datos de entrada
+
+El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_electrica.zip` entregado por el curso (Open Power System Data, *Time series*, versión 2020-10-06; origen: ENTSO-E Transparency). No hace falta descargar nada más: `analisis.py` genera la base analítica y todos los resultados a partir de ese archivo.
+
+## Pruebas de reproducción
+
+| Fecha | Dónde | Comando | Resultado |
+|---|---|---|---|
+| 9-nov-2026 | Computador del autor del informe (Windows 11, Intel Core i5-14600K, 31,7 GB, Python 3.11.9): ejecución completa que genera los resultados del informe | `python analisis.py` | Sin errores, 12,2 min. Registro en `results/run_info.json` y `results/concordancia.csv` |
+| 9-nov-2026 | Copia limpia de la carpeta del repositorio (sin `.git` ni registros previos), mismo computador | `python analisis.py` | Sin errores, 13,8 min, misma concordancia que la ejecución principal |
+| _pendiente_ | Computador de otro integrante | `python analisis.py` | _por registrar (fecha, resultado y concordancia)_ |
+
+## Contribuciones
+
+- **Jorge Mardones:** creación y estructuración del repositorio y todo el contenido de su primera versión (datos, base analítica, protocolo experimental, notebooks 02 y 03).
+- **Benjamín Ruiz:** secciones 3.3, 4.1 y 4.2 del enunciado (sensibilidades, evaluación en la reserva y métricas; notebooks 04 y 05 y `src/modeling.py`) y ejecución de la comparación de modelos.
+- **Matías Pineda:** informe, análisis complementarios (notebook 06), tablas y figuras, `analisis.py`, `README.md` y `requirements.txt`.
+- **Diego Paredes:** presentación del trabajo.
+
+## Uso de inteligencia artificial
+
+Se usó Claude Code (Anthropic) el 8 y 9 de noviembre de 2026 para el borrador y recorte del informe, la integración de resultados, y los archivos `src/make_report_assets.py`, `src/run_validation.py`, `analisis.py`, `README.md`, `requirements.txt` y el notebook 06. La declaración completa, con las comprobaciones realizadas, está en la sección 7 del informe.
+
 ## Contexto académico
 
 EYP3407 – Tópicos Aplicados a la Estadística, Pontificia Universidad Católica de Chile. Profesor: Eloy Alvarado. Ayudante: Andrés Díaz.

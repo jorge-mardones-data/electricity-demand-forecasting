@@ -86,7 +86,7 @@ base = pd.read_csv(DATA, parse_dates=["utc_timestamp", "target_timestamp"])
 base["complete"] = base[PREDICTORS + [TARGET]].notna().all(axis=1)
 base["periodo"] = base["period"].fillna("excluido")
 rows = []
-for period, plabel in [("development", "Desarrollo (2015--2018)"),
+for period, plabel in [("development", "Periodo de desarrollo (2015--2018)"),
                        ("holdout", "Reserva (2019)"),
                        ("excluido", "Excluidos (31-dic-2018)")]:
     for c in ["DE", "ES", "FR"]:
@@ -325,7 +325,7 @@ for m in TEST_MODELS:
         lines.append("\\midrule")
 write("tabla_test.tex", "\n".join([
     "\\begin{tabular}{lrrrrrr}", "\\toprule",
-    "Procedimiento & NMAE DE & NMAE ES & NMAE FR & NMAE macro 2019 & NMAE macro desarrollo & Cambio vs. estacional (2019) \\\\",
+    "Procedimiento & NMAE DE & NMAE ES & NMAE FR & NMAE macro 2019 & NMAE macro del periodo de desarrollo (2015--2018) & Cambio vs. estacional (2019) \\\\",
     "\\midrule", *lines, "\\bottomrule", "\\end{tabular}"]))
 
 # ------------------------------------------------- T10: Random Forest cíclico vs. referencia por país (2019)
