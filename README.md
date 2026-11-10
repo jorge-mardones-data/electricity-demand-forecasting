@@ -19,10 +19,13 @@ Paquete entregado para el caso 03, basado en *Open Power System Data* (OPSD), se
 | `src/modeling.py` | Particiones, especificación de los modelos y métricas compartidas |
 | `src/run_validation.py` | Validación W1–W3 con los hiperparámetros fijados |
 | `src/make_report_assets.py` | Tablas (`.tex`) y figuras del informe, a partir de `results/` |
+| `src/timing.py`, `src/comparar_tiempos.py` | Tiempo por sección de cada notebook (`results/tiempos/`) y comparación CPU vs. GPU |
+| `src/benchmark_gpu.py` | Experimento opcional: Ridge y Random Forest forzados a GPU (RAPIDS cuML) frente a CPU |
 | `notebooks/` | 02 diseño experimental; 03 desarrollo de modelos y búsqueda de hiperparámetros; 04 sensibilidades; 05 reserva 2019, incertidumbre y diagnóstico; 06 análisis complementarios |
 | `results/` | Resultados (CSV) y figuras generados |
 | `reports/informe/` | Informe en LaTeX (XeLaTeX) y su PDF |
 | `docs/protocolo_experimental.md` | Protocolo experimental |
+| `docs/tiempos_cpu_gpu.md` | Cómo medir y comparar tiempos en CPU y GPU |
 
 ## Reproducción con un solo comando
 
@@ -84,18 +87,18 @@ El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_e
 |---|---|---|---|
 | 9-nov-2026 | Computador del autor del informe (Windows 11, Intel Core i5-14600K, 31,7 GB, Python 3.11.9): ejecución completa que genera los resultados del informe | `python analisis.py` | Sin errores, 12,2 min. Registro en `results/run_info.json` y `results/concordancia.csv` |
 | 9-nov-2026 | Copia limpia de la carpeta del repositorio (sin `.git` ni registros previos), mismo computador | `python analisis.py` | Sin errores, 13,8 min, misma concordancia que la ejecución principal |
-| _pendiente_ | Computador de otro integrante | `python analisis.py` | _por registrar (fecha, resultado y concordancia)_ |
+| 10-nov-2026 | Computador de otro integrante (AMD Ryzen 5 9600X, 12 núcleos lógicos, Ubuntu 24.04 en WSL2) | `python analisis.py --sin-pdf` | Sin errores; pasos 3 a 6 en 10,6 min; diferencias < 1,4 % de la escala de cada archivo (`results/tiempos/concordancia_cpu_FrostyDesktop.csv`) |
 
 ## Contribuciones
 
 - **Jorge Mardones:** creación y estructuración del repositorio y todo el contenido de su primera versión (datos, base analítica, protocolo experimental, notebooks 02 y 03).
-- **Benjamín Ruiz:** secciones 3.3, 4.1 y 4.2 del enunciado (sensibilidades, evaluación en la reserva y métricas; notebooks 04 y 05 y `src/modeling.py`) y ejecución de la comparación de modelos.
+- **Benjamín Ruiz:** secciones 3.3, 4.1 y 4.2 del enunciado (sensibilidades, evaluación en la reserva y métricas; notebooks 04 y 05 y `src/modeling.py`) ejecución de la comparación de modelos, medición de tiempos y experimento CPU vs. GPU.
 - **Matías Pineda:** informe, análisis complementarios (notebook 06), tablas y figuras, `analisis.py`, `README.md` y `requirements.txt`.
 - **Diego Paredes:** presentación del trabajo.
 
 ## Uso de inteligencia artificial
 
-Se usó Claude Code (Anthropic) el 8 y 9 de noviembre de 2026 para el borrador y recorte del informe, la integración de resultados, y los archivos `src/make_report_assets.py`, `src/run_validation.py`, `analisis.py`, `README.md`, `requirements.txt` y el notebook 06. La declaración completa, con las comprobaciones realizadas, está en la sección 7 del informe.
+Se usó Claude Code (Anthropic) el 8 y 9 de noviembre de 2026 para el borrador y recorte del informe, la integración de resultados, y los archivos `src/make_report_assets.py`, `src/run_validation.py`, `analisis.py`, `README.md`, `requirements.txt` y el notebook 06. Además, se usó Claude (Anthropic, modo Cowork) entre el 8 y el 10 de noviembre de 2026 para analizar el repositorio y el enunciado, la primera versión de los notebooks 04 y 05 y de `src/modeling.py`, la medición de tiempos (`src/timing.py`, `src/comparar_tiempos.py`) y el experimento CPU vs. GPU (`src/benchmark_gpu.py`). La declaración completa, con las comprobaciones realizadas, está en la sección 7 del informe.
 
 ## Contexto académico
 
