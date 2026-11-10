@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTANTE: compilar con XeLaTeX (fontspec lo requiere).      %
+% Preámbulo de estilo para la presentación en Beamer (16:9),    %
+% diseño académico sobrio para proyección en una sala mediana.  %
+% Se importa desde main.tex con \input{style}.                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------- IDIOMA Y FUENTES ---------------------------
+\usepackage[spanish,provide=*,es-noshorthands]{babel}
+\selectlanguage{spanish}
+
+\usepackage{fontspec}
+% Fuente profesional opcional (requiere tenerla instalada). Por defecto se
+% usa la fuente sans-serif estándar de XeLaTeX (Latin Modern Sans), que no
+% requiere instalación adicional. Para activar otra, descomentar:
+% \setsansfont{Lato}
+% \setmainfont{Lato}
+
+%----------------------------- PAQUETES BASE ---------------------------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{enumitem}
+
+%----------------------------- PALETA (Okabe-Ito, igual que las figuras) ---
+\definecolor{navy}{HTML}{1B2A4A}           % títulos
+\definecolor{grafito}{HTML}{3C3C3C}        % texto
+\definecolor{azulacento}{HTML}{0072B2}     % DE / Ridge / entrenamiento
+\definecolor{naranjaacento}{HTML}{E69F00}  % M2 / validación
+\definecolor{verdeacento}{HTML}{009E73}    % M3
+\definecolor{grisreferencia}{HTML}{999999} % referencias
+\definecolor{naranjaoscuro}{HTML}{D55E00}  % M3* cíclico / FR
+
+%----------------------------- TEMA BASE (sin decoraciones) ---------------
+\usetheme{default}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{headline}{} % sin barra superior
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=grafito,bg=white}
+\setbeamercolor{structure}{fg=azulacento}
+\setbeamercolor{title}{fg=navy}
+\setbeamercolor{subtitle}{fg=grafito}
+\setbeamercolor{frametitle}{fg=navy,bg=white}
+\setbeamercolor{section in head/foot}{fg=grisreferencia,bg=white}
+\setbeamercolor{page number in head/foot}{fg=grisreferencia,bg=white}
+\setbeamercolor{itemize item}{fg=azulacento}
+\setbeamercolor{itemize subitem}{fg=verdeacento}
+\setbeamercolor{enumerate item}{fg=azulacento}
+\setbeamercolor{alerted text}{fg=naranjaoscuro}
+\setbeamercolor{block title}{fg=navy,bg=white}
+\setbeamercolor{block body}{fg=grafito,bg=white}
+\setbeamercolor{caption name}{fg=grisreferencia}
+
+%----------------------------- TIPOGRAFÍA -----------------------------
+% Tamaños relativos de Beamer (no \fontsize absolutos): la página de Beamer
+% en aspectratio=169 es un lienzo pequeño (160mm x 90mm) que se amplifica al
+% proyectarse, por lo que \fontsize{30}{36}pt literales (pensados para una
+% hoja impresa normal) desbordan el frame. Se usan los comandos relativos
+% estándar de LaTeX/Beamer, escalados desde el \\documentclass[11pt]{beamer}.
+\setbeamerfont{title}{size=\Huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{frametitle}{size=\LARGE,series=\bfseries}
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\small}
+\setbeamerfont{block title}{size=\small,series=\bfseries}
+\setbeamerfont{block body}{size=\footnotesize}
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamerfont{footline}{size=\tiny}
+\renewcommand{\arraystretch}{1.25}
+% Listas compactas: el espaciado por defecto de itemize/enumerate en Beamer
+% es generoso y, acumulado en varios ítems, desborda el cuerpo del frame.
+\setlist[itemize]{itemsep=2pt,topsep=2pt,parsep=0pt}
+\setlist[enumerate]{itemsep=2pt,topsep=2pt,parsep=0pt}
+
+%----------------------------- MÁRGENES Y PIE DE PÁGINA -----------------
+\setbeamersize{text margin left=1.1cm,text margin right=1.1cm}
+
+\setbeamertemplate{frametitle}{
+  \vspace{0.25cm}
+  \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\\[2pt]
+  {\color{grisreferencia}\rule{\linewidth}{0.4pt}}
+}
+
+% Pie discreto: nombre de la sección a la izquierda, numeración a la derecha.
+% Sin barras de color, sombras ni degradados.
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{%
+  \begin{beamercolorbox}[wd=.75\paperwidth,ht=2.4ex,dp=1.1ex,leftskip=1.1cm]{section in head/foot}
+    \usebeamerfont{footline}\insertsectionhead
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.4ex,dp=1.1ex,right,rightskip=1.1cm]{page number in head/foot}
+    \usebeamerfont{footline}\insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+}
+
+%----------------------------- NOTA (RECURSO PENDIENTE) -----------------
+% Para marcar, sin inventar datos, un recurso visual que aún no se adaptó.
+\newcommand{\recursopendiente}[1]{%
+  {\small\color{grisreferencia}\itshape #1}%
+}
+
+%----------------------------- AJUSTE DE TABLAS (SOLO ACHICAR) -----------
+% \input{} de una tabla y la reduce, de forma uniforme (mismo factor en
+% ancho y alto), solo lo necesario para que quepa en el ancho disponible
+% (\linewidth) y en una altura máxima (por defecto, 0.42\textheight, holgada
+% para no chocar con el resto del contenido del frame). Las tablas angostas
+% o bajas no se agrandan (evita estirar el texto y desbordar el frame).
+\newsavebox{\tablafitbox}
+\newcommand{\tablafit}[2][0.42\textheight]{%
+  \sbox{\tablafitbox}{\input{#2}}%
+  \pgfmathsetmacro{\tablafitsw}{\linewidth/\wd\tablafitbox}%
+  \pgfmathsetmacro{\tablafitsh}{(#1)/\dimexpr\ht\tablafitbox+\dp\tablafitbox\relax}%
+  \pgfmathsetmacro{\tablafits}{min(1,\tablafitsw,\tablafitsh)}%
+  \centerline{\resizebox{\tablafits\wd\tablafitbox}{!}{\usebox{\tablafitbox}}}%
+}

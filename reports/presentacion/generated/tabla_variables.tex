@@ -1,0 +1,14 @@
+\begin{tabular}{@{}p{4.4cm}p{6.4cm}p{2.0cm}@{}}
+\toprule
+Variable & Qué mide & Decisión \\
+\midrule
+\texttt{country} & País (DE, ES, FR) & incluida \\
+\texttt{demand\_mw} & Demanda en la hora de emisión $t$ & incluida \\
+\texttt{lag\_48h}, \texttt{lag\_72h}, \texttt{lag\_168h} & Demanda en $t-24$, $t-48$, $t-144$ & incluidas \\
+\texttt{rolling\_mean\_24h}, \texttt{rolling\_mean\_168h} & Media móvil de 24 y 168 h hasta $t$ & incluidas \\
+\texttt{target\_hour}, \texttt{target\_day}, \texttt{target\_month} & Calendario local del objetivo & incluidas \\
+\midrule
+\texttt{target\_demand\_mw} & Demanda en $t+24$ & respuesta \\
+Identificadores y marcadores de auditoría & Claves temporales y variables derivadas & excluidas \\
+\bottomrule
+\end{tabular}

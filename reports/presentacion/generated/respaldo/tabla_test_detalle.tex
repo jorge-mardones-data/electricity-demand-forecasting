@@ -1,0 +1,19 @@
+\begin{tabular}{lrrrrrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{DE} & \multicolumn{3}{c}{ES} & \multicolumn{3}{c}{FR} & Macro \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Procedimiento & MAE & RMSE & NMAE & MAE & RMSE & NMAE & MAE & RMSE & NMAE & NMAE \\
+\midrule
+Persistencia & 4\,563 & 6\,951 & 0{,}0817 & 1\,777 & 2\,707 & 0{,}0619 & 3\,098 & 4\,529 & 0{,}0574 & 0{,}0670 \\
+\midrule
+Estacional semanal & 2\,559 & 4\,469 & 0{,}0458 & 1\,255 & 2\,002 & 0{,}0437 & 3\,337 & 4\,635 & 0{,}0618 & 0{,}0505 \\
+\midrule
+M1: Ridge & 2\,336 & 3\,462 & 0{,}0418 & 1\,220 & 1\,672 & 0{,}0425 & 2\,084 & 2\,836 & 0{,}0386 & 0{,}0410 \\
+\midrule
+M2: Árbol podado & 1\,780 & 3\,145 & 0{,}0319 & 785 & 1\,293 & 0{,}0273 & 2\,189 & 3\,317 & 0{,}0406 & 0{,}0333 \\
+\midrule
+M3: RF (dummies) & 1\,438 & 2\,386 & 0{,}0257 & 611 & 1\,047 & 0{,}0213 & 1\,697 & 2\,507 & 0{,}0314 & 0{,}0262 \\
+\midrule
+M3$^\ast$: RF (cíclico) & 1\,355 & 2\,227 & 0{,}0243 & 583 & 1\,015 & 0{,}0203 & 1\,626 & 2\,403 & 0{,}0301 & 0{,}0249 \\
+\bottomrule
+\end{tabular}
