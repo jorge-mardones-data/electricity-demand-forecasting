@@ -1,70 +1,35 @@
 from pathlib import Path
 import pandas as pd
 
-# 1. Localizar el archivo original desde la raíz del proyecto
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT= Path(__file__).resolve().parent.parent
 DATA_PATH = PROJECT_ROOT / "data" / "raw" / "demanda_horaria.csv"
-
-df = pd.read_csv(DATA_PATH)
-
-df["utc_timestamp"] = pd.to_datetime(
-    df["utc_timestamp"],
-    utc=True,
-    errors="coerce"
-)
-
-# 3. Definir las columnas de demanda
-load_cols = [
-    "DE_load_actual_entsoe_transparency",
-    "ES_load_actual_entsoe_transparency",
-    "FR_load_actual_entsoe_transparency",
-]
+df= pd.read_csv(DATA_PATH)
+df["utc_timestamp"]= pd.to_datetime(df["utc_timestamp"],utc=True,errors="coerce")
+load_cols = ["DE_load_actual_entsoe_transparency","ES_load_actual_entsoe_transparency","FR_load_actual_entsoe_transparency",]
 
 def main():
-    # 4. Revisar estructura general
     print("\n--- DIMENSIONES ---")
     print(f"Filas: {len(df):,}")
     print(f"Columnas: {len(df.columns)}")
-
     print("\n--- COLUMNAS Y TIPOS ---")
     print(df.dtypes)
-
     print("\n--- PRIMERAS FILAS ---")
     print(df.head())
-
-    # 5. Revisar calidad temporal
     print("\n--- FECHAS UTC ---")
     print("Fecha mínima:", df["utc_timestamp"].min())
     print("Fecha máxima:", df["utc_timestamp"].max())
-    print(
-        "Fechas inválidas:",
-        df["utc_timestamp"].isna().sum()
-    )
-    print(
-        "Marcas temporales duplicadas:",
-        df["utc_timestamp"].duplicated().sum()
-    )
+    print("Fechas inválidas:",df["utc_timestamp"].isna().sum())
+    print("Marcas temporales duplicadas:",df["utc_timestamp"].duplicated().sum())
 
-    ordered = df["utc_timestamp"].dropna().sort_values()
-    gaps = ordered.diff().ne(pd.Timedelta(hours=1))
-    print(
-        "Saltos distintos de una hora en la serie ordenada:",
-        gaps.sum() - 1 if len(gaps) else 0
-    )
-
-    # 6. Revisar ausencia y rangos de demanda
+    ordered= df["utc_timestamp"].dropna().sort_values()
+    gaps= ordered.diff().ne(pd.Timedelta(hours=1))
+    print("Saltos distintos de una hora en la serie ordenada:",gaps.sum() - 1 if len(gaps) else 0)
     print("\n--- VALORES AUSENTES ---")
     print(df[load_cols].isna().sum())
-
     print("\n--- RESUMEN DE DEMANDA ---")
     print(df[load_cols].describe().T)
-
-    # 7. Revisar si hay valores de demanda no positivos
     print("\n--- VALORES NO POSITIVOS ---")
     print((df[load_cols] <= 0).sum())
-
-    # 8. No se modifica ni se guarda la base original.
-
 
 if __name__ == "__main__":
     main()
@@ -95,40 +60,24 @@ if __name__ == "__main__":
 #---- Investigar valores faltantes------
 
 for col in load_cols:
-    missing = df.loc[df[col].isna(), ["utc_timestamp", col]]
-
+    missing= df.loc[df[col].isna(), ["utc_timestamp", col]]
     print(f"\n--- {col} ---")
     print(f"Cantidad de ausentes: {len(missing)}")
-
     if not missing.empty:
         print("Fechas con valores ausentes:")
         print(missing["utc_timestamp"].to_string(index=False))
-
         print("\nValores de demanda en las horas afectadas:")
-        print(df.loc[
-            df[col].isna(),
-            ["utc_timestamp"] + load_cols
-        ].to_string(index=False))
-
-
+        print(df.loc[df[col].isna(),["utc_timestamp"] + load_cols].to_string(index=False))
 
 # --- CONVERSIÓN A HORA LOCAL ---
-timezones = {
-    "DE": "Europe/Berlin",
-    "ES": "Europe/Madrid",
-    "FR": "Europe/Paris",
-}
-
+timezones= {"DE": "Europe/Berlin","ES": "Europe/Madrid","FR": "Europe/Paris",}
 for country, timezone in timezones.items():
     local_time = df["utc_timestamp"].dt.tz_convert(timezone)
-
     print(f"\n--- HORA LOCAL: {country} ---")
     print("Primeras fechas:")
     print(local_time.head(3).to_string(index=False))
-
     print("Últimas fechas:")
     print(local_time.tail(3).to_string(index=False))
-
     print("Cantidad de fechas locales sin hora de verano:")
     print((local_time.dt.month.isin([1, 2, 11, 12])).sum())
 

@@ -85,6 +85,7 @@ El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_e
 ## Uso de inteligencia artificial
 
 Se usó Claude Code (Anthropic) el 8 y 9 de noviembre de 2026 para el borrador y recorte del informe, la integración de resultados, y los archivos `src/make_report_assets.py`, `src/run_validation.py`, `analisis.py`, `README.md`, `requirements.txt` y el notebook 06. La declaración completa, con las comprobaciones realizadas, está en la sección 7 del informe.
+Sea usó ChatGPT (OpenAI) el 4-8 de noviembre de 2026 como apoyo estructural del repositorio, así como también para exploración de datos, construccion de la base e implementación de modelos. En los archivos `docs/protocolo_experimental.md`, `src/audit_data.py`, `src/build_dataset.py`, `notebooks/02_experimental_design.ipynb` y `notebooks/03_model_development.ipynb`.
 
 ## Contexto académico
 
