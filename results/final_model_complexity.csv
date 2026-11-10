@@ -1,0 +1,3 @@
+modelo,arboles,profundidad_media,profundidad_max,nodos_totales,hojas_totales,segundos_ajuste
+Random Forest (cíclico),200,35.185,44,11412818,5706509,7.463659200002439
+Árbol podado,1,26.0,26,8521,4261,70.6217662000563

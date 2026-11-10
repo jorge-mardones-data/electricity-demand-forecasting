@@ -1,0 +1,67 @@
+{
+  "inicio": "2026-11-09T20:29:52",
+  "comando": "analisis.py",
+  "sistema": {
+    "plataforma": "Windows-10-10.0.26200-SP0",
+    "procesador": "Intel(R) Core(TM) i5-14600K",
+    "nucleos_logicos": 20,
+    "memoria_gb": 31.7
+  },
+  "python": "3.11.9",
+  "paquetes": {
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.7.2",
+    "matplotlib": "3.10.7",
+    "nbformat": "5.10.4",
+    "nbclient": "0.10.2",
+    "ipykernel": "7.1.0"
+  },
+  "xelatex": "XeTeX 3.141592653-2.6-0.999998 (TeX Live 2026)",
+  "etapas": [
+    {
+      "paso": 1,
+      "nombre": "Auditoria de la base original",
+      "segundos": 0.5
+    },
+    {
+      "paso": 2,
+      "nombre": "Base analitica",
+      "segundos": 8.7
+    },
+    {
+      "paso": 3,
+      "nombre": "Validacion temporal W1-W3",
+      "segundos": 211.1
+    },
+    {
+      "paso": 4,
+      "nombre": "Sensibilidades (notebook 04)",
+      "segundos": 191.0
+    },
+    {
+      "paso": 5,
+      "nombre": "Reserva 2019, bootstrap y diagnostico (notebook 05)",
+      "segundos": 225.7
+    },
+    {
+      "paso": 6,
+      "nombre": "Analisis complementarios (notebook 06)",
+      "segundos": 84.7
+    },
+    {
+      "paso": 7,
+      "nombre": "Tablas y figuras del informe",
+      "segundos": 2.4
+    },
+    {
+      "paso": 8,
+      "nombre": "Compilacion del informe (PDF)",
+      "segundos": 4.9
+    }
+  ],
+  "estado": "completo",
+  "segundos_totales": 729.0,
+  "fin": "2026-11-09T20:42:03"
+}
