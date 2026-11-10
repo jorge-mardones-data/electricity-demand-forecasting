@@ -57,6 +57,17 @@ Por defecto, la validación usa los hiperparámetros ya seleccionados (en `src/m
 - `results/concordancia.csv`: diferencia entre los resultados regenerados y los que había antes de ejecutar (útil para la prueba desde una copia limpia).
 - `results/ejecucion/`: registros de cada paso y copias ejecutadas de los notebooks (no se versionan). Los notebooks originales no se modifican.
 
+### Tiempos por sección y comparación CPU vs. GPU
+
+Cada notebook y `src/run_validation.py` guardan el tiempo de cada sección en `results/tiempos/`. Para repetir el análisis en una GPU NVIDIA (vía RAPIDS cuML, en Linux o WSL2) y comparar tiempos:
+
+```bash
+python analisis.py --gpu --sin-pdf
+python src/comparar_tiempos.py
+```
+
+La corrida en GPU no reemplaza los resultados oficiales. Detalles en `docs/tiempos_cpu_gpu.md`.
+
 ### Notas sobre reproducibilidad
 
 - Las semillas están fijadas (`random_state=42`), pero el Random Forest puede dar predicciones levemente distintas con otra versión de las librerías o con otro equipo. Por eso se fijan las versiones en `requirements.txt` y se registra la concordancia en `results/concordancia.csv`. Las cifras del informe corresponden a la ejecución registrada en `results/run_info.json`.
