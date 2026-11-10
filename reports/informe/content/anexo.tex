@@ -1,0 +1,121 @@
+\section{Anexo técnico}
+
+\subsection{Descripción de la respuesta}
+
+\begin{table}[!htbp]
+    \centering
+    \caption{Descripción de la demanda a 24 horas (MW), periodo de desarrollo 2015--2018.}
+    \small
+    \label{tab:respuesta}
+    \input{generated/tabla_respuesta}
+    \\ \textit{\scriptsize{Calculada solo con respuestas observadas del periodo de desarrollo (2015--2018).}}
+\end{table}
+
+\begin{figure}[!htbp]
+    \centering
+        \caption{Perfil medio de la demanda a 24 horas por hora local, día de la semana (L = lunes) y mes del instante objetivo, relativo a la media de cada país (adimensional). Periodo de desarrollo (2015--2018).\label{img:descriptiva}}
+        \includegraphics[width=0.95\textwidth]{img/fig_descriptiva.pdf}
+\end{figure}
+
+\subsection{Resultados completos de validación}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{MAE y RMSE (MW) y NMAE por procedimiento, ventana y país; NMAE macro en la última columna.\label{tab:detalle}}
+        \resizebox{\textwidth}{!}{\input{generated/tabla_detalle}}
+\end{table}
+
+\subsection{Búsqueda de hiperparámetros}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Ridge: NMAE macro medio y desviación estándar entre ventanas por valor de $\alpha$ (ordenado por NMAE).\label{tab:ridge}}
+        \small
+        \input{generated/tabla_ridge}
+    \\ Entre $\alpha=0{,}001$ y $316$ el NMAE es prácticamente constante: el resultado es insensible al valor exacto.
+\end{table}
+
+\textbf{Random Forest.} Se evaluaron 18 configuraciones (200 árboles; profundidad máxima ninguna, 15 o 25; mínimo de observaciones por hoja 2, 5 o 10; fracción de predictores 0,7 o 1,0). La configuración seleccionada obtuvo 0,02821 (desviación estándar 0,00085; mínimo 0,02724 en W3 y máximo 0,02880 en W1). La siguiente mejor (profundidad máxima 25) difiere en solo 0,00001, por lo que ambas son prácticamente equivalentes. La tabla \ref{tab:rf_busqueda} entrega las 18 configuraciones.
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Random Forest: NMAE macro por configuración (promedio, desviación estándar, mínimo y máximo entre ventanas), ordenado por promedio. Todas con 200 árboles.\label{tab:rf_busqueda}}
+        \small
+        \input{generated/tabla_rf_busqueda}
+\end{table}
+
+\subsection{Complejidad, costo e importancia del modelo final}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Complejidad de los modelos finales ajustados con el periodo de desarrollo completo (2015--2018).\label{tab:complejidad}}
+        \small
+        \input{generated/tabla_complejidad}
+\end{table}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Tiempo de ajuste final de cada procedimiento con el periodo de desarrollo completo (2015--2018).\label{tab:tiempos}}
+        \small
+        \input{generated/tabla_tiempos}
+\end{table}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Importancia basada en impureza del Random Forest cíclico final (ajustado con 2015--2018), agrupada por predictor original (seno y coseno de una variable se suman).\label{tab:importancia}}
+        \small
+        \input{generated/tabla_importancia}
+\end{table}
+
+\subsection{Incertidumbre y diagnóstico}
+
+\begin{figure}[!htbp]
+    \centering
+        \caption{Distribución bootstrap de la diferencia de NMAE macro entre el Random Forest cíclico y la referencia estacional semanal (2\,000 réplicas por bloques semanales). Las líneas discontinuas marcan el intervalo de 95\,\%.\label{img:bootstrap}}
+        \includegraphics[width=0.62\textwidth]{img/fig_bootstrap.pdf}
+\end{figure}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Los tres días objetivo con mayor MAE diario del Random Forest cíclico en 2019, por país.\label{tab:peores}}
+        \footnotesize
+        \input{generated/tabla_peores}
+    \\ Sesgo = predicción menos observado (positivo: sobreestimación). Los nombres de los feriados provienen del calendario oficial, no de los datos.
+\end{table}
+
+\subsection{Resultados completos de la evaluación en 2019}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{MAE y RMSE (MW) y NMAE por procedimiento y país en la reserva 2019; NMAE macro en la última columna.\label{tab:test_detalle}}
+        \resizebox{\textwidth}{!}{\input{generated/tabla_test_detalle}}
+\end{table}
+
+\subsection{Correlación entre predictores}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Correlación de Pearson entre los predictores numéricos y la respuesta en el entrenamiento final (2015--2018), calculada dentro de cada país y promediada entre los tres.\label{tab:correlacion}}
+        \footnotesize
+        \resizebox{\textwidth}{!}{\input{generated/tabla_correlacion}}
+    \\ La última fila es la correlación con la respuesta \texttt{target\_demand\_mw}.
+\end{table}
+
+\subsection{Datos ausentes}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Bloques de horas consecutivas sin demanda observada, por país (2015--2019).\label{tab:ausentes_bloques}}
+        \small
+        \input{generated/tabla_ausentes_bloques}
+\end{table}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{NMAE de cada país con sus casos completos (propio) y restringido a las fechas en que los tres países tienen caso completo (común).\label{tab:ausentes_efecto}}
+        \footnotesize
+        \resizebox{\textwidth}{!}{\input{generated/tabla_ausentes_efecto}}
+    \\ Estacional: referencia estacional semanal. $n$ corresponde a las filas de evaluación del país (en Macro, suma de los tres). Para Francia ambos valores coinciden porque sus fechas son un subconjunto de las de los otros países. El Random Forest cíclico solo se evalúa en 2019.
+\end{table}
+
+\pend{PENDIENTE: Agregar al anexo los resultados de las sensibilidades por país.}

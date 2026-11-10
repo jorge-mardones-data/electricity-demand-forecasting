@@ -1,0 +1,11 @@
+\section{Resumen}
+
+\textbf{Problema.} Se estudia cuánto puede mejorarse una predicción estacional de la demanda eléctrica horaria a 24 horas en Alemania, España y Francia, con datos de 2015 a 2019 (ENTSO-E, vía Open Power System Data). La unidad es el par país--hora de emisión $t$ y la respuesta, la demanda en $t+24$.
+
+\textbf{Diseño.} Se comparan dos referencias (persistencia y la misma hora de la semana anterior) con Ridge, un árbol podado y un Random Forest. La selección usa tres ventanas temporales expansivas dentro de 2015--2018 y 2019 se reserva para una única evaluación. La métrica es el NMAE macro (MAE de cada país relativo a su demanda media de entrenamiento, promediado).
+
+\textbf{Resultado principal.} En 2019, el Random Forest con calendario cíclico obtiene un NMAE macro de 0,0249 frente a 0,0505 de la referencia semanal: 50,7\,\% menos error (IC 95\,\% por bloques semanales: 45,4\,\% a 54,9\,\%), con mejoras de 47\,\% a 54\,\% en cada país. También supera al árbol podado (25,1\,\%) y a Ridge (39,2\,\%). En el periodo de desarrollo (2015--2018) la mejora fue similar (49,6\,\%).
+
+\textbf{Recomendación.} Usar el Random Forest, reajustado periódicamente con toda la historia, pues la ganancia se mantiene en la reserva y es clara frente a alternativas más simples.
+
+\textbf{Limitaciones.} El modelo no incorpora feriados ni temperatura: en feriados el error diario llega a 11\,000 MW y la demanda se sobreestima, y en horas de alta demanda se subestima (sesgo de $-456$ a $-920$ MW). Los intervalos son condicionales al ajuste y a un solo año.

@@ -1,0 +1,13 @@
+\begin{tabular}{lrrrrrr}
+\toprule
+Procedimiento & W1 & W2 & W3 & Media & Desv. est. entre ventanas & Cambio vs. estacional \\
+\midrule
+Persistencia & 0{,}0677 & 0{,}0678 & 0{,}0683 & 0{,}0679 & 0{,}0003 & +26{,}4\% \\
+Estacional semanal & 0{,}0501 & 0{,}0542 & 0{,}0569 & 0{,}0537 & 0{,}0034 & -- \\
+\midrule
+M1: Ridge & 0{,}0417 & 0{,}0428 & 0{,}0440 & 0{,}0428 & 0{,}0012 & -20{,}3\% \\
+M2: Árbol podado & 0{,}0372 & 0{,}0363 & 0{,}0347 & 0{,}0361 & 0{,}0012 & -32{,}9\% \\
+M3: Random Forest (dummies) & 0{,}0288 & 0{,}0286 & 0{,}0272 & 0{,}0282 & 0{,}0009 & -47{,}5\% \\
+\textbf{M3$^\ast$: Random Forest (cíclico)} & 0{,}0276 & 0{,}0275 & 0{,}0262 & 0{,}0271 & 0{,}0007 & -49{,}6\% \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,83 @@
+\section{Problema y datos}
+
+\subsection{Pregunta, audiencia y decisión}
+
+La pregunta es: \emph{¿cuánto puede mejorarse una predicción estacional de la demanda eléctrica horaria a 24 horas?} Es una \textbf{predicción sucesiva a horizonte fijo}: en cada hora de emisión $t$ se predice la demanda de $t+24$ con información disponible hasta $t$, y no equivale a emitir todo el día siguiente a una hora de mercado fija. La población son las tres series de demanda observada de Alemania (DE), España (ES) y Francia (FR) entre 2015 y 2019; la unidad es el par país--hora de emisión $t$ y la respuesta es la demanda en $t+24$, en MW.
+
+El análisis se dirige a un operador del sistema eléctrico o a una comercializadora que programa con un día de anticipación la energía de cada hora; la decisión es cuánta energía programar o comprar para cada hora del día siguiente, y la referencia estacional semanal (repetir la demanda de la misma hora de la semana anterior) es la alternativa simple de comparación. Como equivocarse cuesta en ambos sentidos, se informan también el sesgo y el error por subgrupos. Las conclusiones son predictivas, sin interpretación causal.
+
+\subsection{Procedencia y calidad de los datos}
+
+Se usa el paquete entregado (\texttt{caso03\_demanda\_electrica.zip}), basado en \textit{Open Power System Data} (OPSD), serie horaria, versión 2020-10-06, cuyo origen es la plataforma de transparencia de ENTSO-E (Open Power System Data, 2020; ENTSO-E, s.\,f.). El archivo original (sin modificar) tiene 43\,824 horas y cinco columnas: dos marcas temporales (UTC y CET/CEST) y la demanda observada (MW) de DE, ES y FR. OPSD no declara una licencia explícita en sus metadatos; los datos se usan solo con fines académicos, citando al productor. \pend{PENDIENTE: Confirmar las condiciones de reutilización de ENTSO-E Transparency en su sitio y citarlas.} La auditoría mostró:
+\begin{itemize}
+    \item \textbf{Regularidad:} sin marcas temporales duplicadas ni saltos distintos de una hora, sin valores no positivos y con rangos plausibles (DE: 31\,307--77\,549 MW; ES: 17\,168--41\,015 MW; FR: 30\,426--94\,492 MW).
+    \item \textbf{Ausentes:} DE, 0; ES, 18 (0,041\,\%); FR, 30 (0,068\,\%). No son ceros y se conservan como ausentes; su causa se desconoce, por lo que no se asumen aleatorios.
+    \item \textbf{Zona horaria:} el orden y las particiones usan UTC y el calendario se deriva de la hora local del objetivo (\texttt{Europe/Berlin}, \texttt{Europe/Madrid}, \texttt{Europe/Paris}); como la clave es UTC, no hay horas repetidas ni ausentes por el cambio de horario.
+\end{itemize}
+
+\subsection{Construcción de la muestra} \label{sec:muestra}
+
+La base se transforma a formato largo, con una fila por país--hora de emisión $t$ (llave: país y marca UTC, sin duplicados), y la respuesta es la demanda en $t+24$ obtenida por unión según país e instante objetivo. El periodo se asigna según el año de $t$. Las 24 horas del 31 de diciembre de 2018 quedan fuera, porque su respuesta cae en 2019, que se reserva. La figura \ref{img:flujo} resume el flujo y la tabla \ref{tab:muestra} entrega los tamaños.
+
+\begin{figure}[!htbp]
+    \centering
+        \caption{Flujo de construcción de la muestra (filas país--hora).\label{img:flujo}}
+        \begin{tikzpicture}[
+            caja/.style={draw, rounded corners=2pt, align=center, font=\footnotesize, inner sep=3pt, text width=3.6cm},
+            ancha/.style={draw, rounded corners=2pt, align=center, font=\footnotesize, inner sep=3pt, text width=11.6cm},
+            flecha/.style={-{Stealth[length=2mm]}, thick}]
+            \node[ancha] (raw) {\textbf{Archivo original:} 43\,824 horas $\times$ 5 columnas; 48 valores ausentes de demanda (ES: 18, FR: 30)};
+            \node[ancha, below=3mm of raw] (largo) {\textbf{Formato largo país--hora:} $3 \times 43\,824 = 131\,472$ filas. Respuesta $Y_{t+24}$ y predictores calculados en UTC};
+            \node[caja, below=4mm of largo] (dev) {\textbf{Periodo de desarrollo}\\$t$ en 2015--2018\\105\,120 filas};
+            \node[caja, left=3mm of dev] (exc) {\textbf{Excluidas}\\$t$ el 31-dic-2018\\(respuesta en 2019)\\72 filas};
+            \node[caja, right=3mm of dev] (res) {\textbf{Reserva}\\$t$ en 2019\\26\,280 filas};
+            \node[caja, below=4mm of dev] (devc) {Casos completos\\(10 predictores y respuesta)\\103\,680};
+            \node[caja, below=4mm of res] (resc) {Casos completos\\26\,031};
+            \draw[flecha] (raw) -- (largo);
+            \draw[flecha] (largo.south) -- ++(0,-2mm) -| (exc.north);
+            \draw[flecha] (largo.south) -- (dev.north);
+            \draw[flecha] (largo.south) -- ++(0,-2mm) -| (res.north);
+            \draw[flecha] (dev) -- (devc);
+            \draw[flecha] (res) -- (resc);
+        \end{tikzpicture}
+\end{figure}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Construcción de la muestra por periodo y país (filas país--hora).\label{tab:muestra}}
+        \footnotesize
+        \input{generated/tabla_muestra}
+    \\ Casos completos: respuesta y los diez predictores disponibles.
+\end{table}
+
+No se imputa: el entrenamiento y la evaluación de cada ventana usan solo \textit{casos completos}, para comparar todos los procedimientos sobre una base común. En el periodo de desarrollo (2015--2018) se pierden 167 filas en DE (0,48\,\%), 389 en ES (1,11\,\%) y 884 en FR (2,52\,\%), incluidas las primeras 167 horas de cada país (sin 168 horas de historia para la media móvil semanal). Una hora ausente deja sin respuesta a la fila $h-24$ y sin predictores completos a las filas desde $h$ en adelante, de modo que pocas horas ausentes eliminan muchas filas; las de ES caen todas en 2015 y las de FR en seis bloques, el mayor de 13 horas (anexo, tabla \ref{tab:ausentes_bloques}). Evaluar solo las fechas en que los tres países tienen caso completo cambia el NMAE por país a lo más 1,9\,\% y el macro a lo más 0,6\,\% (anexo, tabla \ref{tab:ausentes_efecto}), aunque no se puede descartar que las ausentes sean sistemáticas.
+
+\subsection{Respuesta y predictores admisibles}
+
+La respuesta se describe en el anexo (tabla \ref{tab:respuesta} y figura \ref{img:descriptiva}): las escalas difieren (España es casi la mitad de Alemania o Francia), por lo que las métricas agregadas se normalizan con la demanda media de entrenamiento de cada país; y hay un ciclo diario marcado, una caída los fines de semana y estacionalidad anual (más marcada en Francia), estructura que aprovechan las referencias estacionales y los rezagos de 24 y 168 horas.
+
+Un predictor es admisible si se conoce en $t$: la demanda histórica hasta $t$ y el calendario local del instante $t+24$, que es determinista. Los rezagos se nombran por su distancia al \textit{instante objetivo}: \texttt{lag\_48h} es la demanda en $t-24$, \texttt{lag\_72h} la de $t-48$ y \texttt{lag\_168h} la de $t-144$ (la misma hora de la semana anterior al objetivo). Las medias móviles usan solo horas hasta $t$. La tabla \ref{tab:variables} resume la decisión sobre cada variable. \texttt{target\_is\_weekend} no es predictor porque se deriva de \texttt{target\_day}; se usa solo en el diagnóstico. No hay feriados ni variables meteorológicas, pues el caso exige trabajar solo con los archivos entregados.
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Variables admisibles y excluidas.}
+        \footnotesize
+        \label{tab:variables}
+        \renewcommand{\arraystretch}{1.1}
+        \begin{tabular}{@{}p{4.6cm}p{5.4cm}p{1.9cm}p{1.9cm}p{1.9cm}@{}}
+            \toprule
+            Variable & Interpretación & Tipo & Disponibilidad & Decisión \\
+            \midrule
+            \texttt{country} & País (DE, ES, FR) & categórica & siempre & incluida \\
+            \texttt{demand\_mw} & Demanda en la hora de emisión $t$ & numérica, MW & en $t$ & incluida \\
+            \texttt{lag\_48h}, \texttt{lag\_72h}, \texttt{lag\_168h} & Demanda en $t-24$, $t-48$ y $t-144$ & numérica, MW & en $t$ & incluidas \\
+            \texttt{rolling\_mean\_24h}, \texttt{rolling\_mean\_168h} & Media de la demanda de las 24 y 168 horas hasta $t$ & numérica, MW & en $t$ & incluidas \\
+            \texttt{target\_hour}, \texttt{target\_day}, \texttt{target\_month} & Hora (0--23), día de la semana y mes locales del objetivo & categóricas & calendario & incluidas \\
+            \midrule
+            \texttt{target\_demand\_mw} & Demanda en $t+24$ & numérica, MW & posterior a $t$ & respuesta \\
+            \texttt{utc\_timestamp}, \texttt{target\_timestamp}, \texttt{cet\_cest\_timestamp} & Claves temporales (emisión, objetivo) y hora CET/CEST original (no es la hora local) & fecha-hora & -- & identificadores; CET/CEST descartada \\
+            \texttt{target\_is\_weekend} & Fin de semana del objetivo & lógica & calendario & excluida (derivada) \\
+            \texttt{period}, \texttt{has\_*}, \texttt{last\_available\_timestamp}, \texttt{target\_outside\_dataset}, \texttt{time\_diff} & Marcadores de periodo, disponibilidad y auditoría (usan el fin de la base) & auxiliares & -- & excluidas \\
+            \bottomrule
+        \end{tabular}
+\end{table}

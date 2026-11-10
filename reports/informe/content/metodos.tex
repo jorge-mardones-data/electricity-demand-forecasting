@@ -1,0 +1,37 @@
+\section{Métodos}
+
+\subsection{Expectativas, preprocesamiento y presupuesto de búsqueda}
+
+Antes del ajuste se formuló una expectativa por procedimiento. \textbf{Persistencia} y \textbf{estacional semanal} capturan los ciclos diario y semanal, pero fallan en transiciones entre laborables y fin de semana y con feriados. \textbf{M1, Ridge}: relación lineal y aditiva entre rezagos, medias móviles y calendario, sin interacciones (hora $\times$ tipo de día). \textbf{M2, árbol podado}: captura interacciones y no linealidades, pero es inestable y constante por tramos. \textbf{M3, Random Forest}: reduce la varianza del árbol, con mejor desempeño esperado, mayor costo y menor interpretabilidad; al ser por tramos, no extrapola niveles fuera del rango de entrenamiento.
+
+\textbf{Preprocesamiento.} \texttt{country} y el calendario (\texttt{target\_hour}, \texttt{target\_day}, \texttt{target\_month}) se codifican con indicadores; las categorías no vistas en el entrenamiento se codifican con ceros. Ridge estandariza los seis predictores numéricos; árbol y bosque usan variables sin escalar. Todo es un \textit{pipeline} reajustado en cada ventana solo con el entrenamiento, con un modelo por procedimiento para los tres países. En la variante cíclica del Random Forest (M3$^\ast$, sección \ref{sec:sens}) hora, día y mes se reemplazan por pares seno--coseno con periodos 24, 7 y 12, y solo \texttt{country} usa indicadores; el resto y los hiperparámetros son los de M3.
+
+\textbf{Presupuesto de búsqueda.} La tabla \ref{tab:busqueda} resume los modelos. Cada familia usa a lo más 20 configuraciones, evaluadas en las tres ventanas y elegidas por menor NMAE macro promedio.
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Procedimientos de aprendizaje, hiperparámetros y presupuesto de búsqueda.}
+        \label{tab:busqueda}
+        \small
+        \renewcommand{\arraystretch}{1.1}
+        \begin{tabular}{@{}p{2.6cm}p{3.3cm}p{5.6cm}p{1.2cm}p{2.5cm}@{}}
+            \toprule
+            Procedimiento & Modelo & Hiperparámetros evaluados & N.º config. & Selección \\
+            \midrule
+            M1: Ridge & Regresión lineal con penalización $\ell_2$ & $\alpha\in$ 15 valores logarítmicos entre $10^{-3}$ y $10^{4}$ & 15 & $\alpha=316{,}2$ \\
+            M2: Árbol podado & Árbol de regresión con poda por costo--complejidad & \texttt{ccp\_alpha}: 20 valores de la ruta de poda del árbol completo & 20 & \texttt{ccp\_alpha}$=256{,}9$ \\
+            M3: Random Forest & Bosque de 200 árboles & \texttt{max\_depth}$\in\{$ninguna, 15, 25$\}$; \texttt{min\_samples\_leaf}$\in\{2,5,10\}$; \texttt{max\_features}$\in\{0{,}7;1{,}0\}$ & 18 & ninguna, 2 y 0,7 \\
+            \bottomrule
+        \end{tabular}
+    \\ Todas usan las ventanas W1--W3 de la tabla \ref{tab:ventanas}; \texttt{random\_state}$=42$.
+\end{table}
+
+\subsection{Justificación de los procedimientos}
+
+\textbf{M1, Ridge.} Es la alternativa lineal razonable (Hoerl \& Kennard, 1970); la penalización se elige por validación temporal y la estandarización hace comparable su efecto entre predictores de distinta escala. Los predictores están correlacionados (anexo, tabla \ref{tab:correlacion}), pero el NMAE de Ridge casi no cambia entre $\alpha=0{,}001$ y $\alpha=316$ (anexo, tabla \ref{tab:ridge}), por lo que la colinealidad no parece ser un problema importante.
+
+\textbf{M2, árbol podado.} Captura interacciones y no linealidades con la complejidad controlada por poda por costo--complejidad (Breiman et al., 1984). La grilla de \texttt{ccp\_alpha} reúne las rutas de poda de las tres ventanas (el cero y 19 cuantiles de los valores positivos), por lo que los candidatos para W1 provienen en parte de ajustes con datos que incluyen su validación; afecta solo al conjunto de candidatos y no usa la reserva. El valor elegido (256,87) es el mayor no trivial de la grilla (el siguiente deja solo la raíz), así que no se exploraron podas más fuertes.
+
+\textbf{M3, Random Forest.} Ensamble de 200 árboles con submuestreo de predictores en cada división (Breiman, 2001; James et al., 2021). Los mejores valores caen en el borde de la grilla (sin límite de profundidad, 2 observaciones por hoja y \texttt{max\_features}$=0{,}7$), por lo que podría existir una configuración algo mejor fuera de ella; no se amplió porque el NMAE varía poco entre vecinas (anexo, tabla \ref{tab:rf_busqueda}): 1,3\,\% al pasar a 5 observaciones por hoja, 2,6\,\% al pasar a \texttt{max\_features}$=1{,}0$ y menos de 0,1\,\% al limitar la profundidad a 25, frente a una diferencia de 21,8\,\% con el árbol podado. La búsqueda tardó 178 minutos.
+
+

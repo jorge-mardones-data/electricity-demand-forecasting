@@ -1,0 +1,15 @@
+\begin{tabular}{llrrrrr}
+\toprule
+Análisis & Escenario & W1 & W2 & W3 & Promedio & Cambio vs. base \\
+\midrule
+S1: calendario & Random Forest, dummies (base) & 0{,}0288 & 0{,}0286 & 0{,}0272 & 0{,}0282 & -- \\
+ & Random Forest, cíclico & 0{,}0276 & 0{,}0275 & 0{,}0262 & 0{,}0271 & -3{,}9\% \\
+S1: calendario & Ridge, dummies (base) & 0{,}0417 & 0{,}0428 & 0{,}0440 & 0{,}0428 & -- \\
+ & Ridge, cíclico & 0{,}0467 & 0{,}0472 & 0{,}0487 & 0{,}0475 & +11{,}0\% \\
+\midrule
+S2: historia$^\dagger$ & Random Forest, ventana creciente (base) & 0{,}0288 & 0{,}0286 & 0{,}0272 & 0{,}0279 & -- \\
+ & Random Forest, último año & 0{,}0288 & 0{,}0309 & 0{,}0296 & 0{,}0302 & +8{,}3\% \\
+S2: historia$^\dagger$ & Ridge, ventana creciente (base) & 0{,}0417 & 0{,}0428 & 0{,}0440 & 0{,}0434 & -- \\
+ & Ridge, último año & 0{,}0417 & 0{,}0427 & 0{,}0442 & 0{,}0435 & +0{,}2\% \\
+\bottomrule
+\end{tabular}

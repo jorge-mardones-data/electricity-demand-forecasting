@@ -1,0 +1,56 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTANTE: Cambiar el compilador a XeLaTeX en las opciones %
+%               Creditos Github: @diegocostares               %
+%                Disponible en: @open-source-uc               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{style}
+
+\begin{document}
+%%%%%%%%%%%%%%%%% RENOMBRE %%%%%%%%%%%%%%%%%
+\graphicspath{ {./img/} }
+\renewcommand{\contentsname}{Índice de contenido}
+\renewcommand{\listfigurename}{Índice de figuras}
+\renewcommand{\listtablename}{Índice de Tablas}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand*{\lstlistingname}{Código}
+
+
+%%%%%%%%%%%%%%%%% ENCABEZADO %%%%%%%%%%%%%%%%%
+% Si se quiere eliminar, se tiene que quitar tambien las configuraciones del style.cls
+\fancyhead[L]{ % Encabezado a la izquierda
+  \begin{picture}(0,0) \put(-40,16){\includegraphics[width=15mm]{img/logo-uc-3.pdf}} \end{picture}
+  \put(8,40){\textcolor{gray}{\scriptsize{\begin{tabular}{l}
+    PONTIFICIA UNIVERSIDAD CATÓLICA DE CHILE\\
+    FACULTAD DE MATEMÁTICAS\\
+    DEPARTAMENTO DE ESTADÍSTICA
+  \end{tabular}}}}
+}
+\rhead{}
+
+
+%%%%%%%%%%%%%%%%% PORTADA %%%%%%%%%%%%%%%%%
+\input{content/portada}
+
+
+%%%%%%%%%%%%%%%%% CONTENIDO %%%%%%%%%%%%%%%%%
+\newpage
+\input{content/resumen}
+\input{content/problema}
+\input{content/diseno}
+\input{content/metodos}
+\input{content/resultados}
+\input{content/discusion}
+\input{content/reproducibilidad}
+
+
+%%%%%%%%%%%%%%%%% BIBLIOGRAFIA %%%%%%%%%%%%%%%%%
+\newpage
+\input{content/bibliografia}
+
+%%%%%%%%%%%%%%%%% ANEXO TECNICO (max. 6 paginas) %%%%%%%%%%%%%%%%%
+
+\newpage
+\input{content/anexo}
+
+\end{document}

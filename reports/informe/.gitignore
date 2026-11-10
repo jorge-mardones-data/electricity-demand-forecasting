@@ -1,0 +1,13 @@
+# Archivos auxiliares de LaTeX (compilar con: xelatex main.tex, dos veces)
+*.aux
+*.log
+*.toc
+*.lof
+*.lot
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Copia de seguridad del texto completo (no se entrega)
+borrador_completo/

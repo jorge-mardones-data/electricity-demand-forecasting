@@ -1,0 +1,58 @@
+\section{Diseño de evaluación}
+
+\subsection{Particiones, información disponible y referencia}
+
+Los datos se dividen en \textbf{periodo de desarrollo} (horas de emisión $t$ de 2015 a 2018), donde se entrena, valida y selecciona, y una \textbf{reserva} (2019) que no interviene en ninguna decisión. Dentro del periodo de desarrollo (2015--2018) se usan tres ventanas de origen creciente (figura \ref{img:ventanas}, tabla \ref{tab:ventanas}), que respetan el orden temporal (Bergmeir \& Benítez, 2012; Hyndman \& Athanasopoulos, 2021).
+
+\begin{figure}[!htbp]
+    \centering
+        \caption{Esquema temporal de las particiones. Azul: entrenamiento. Naranja: validación. Gris: reserva usada una sola vez. La franja de 24 horas antes de cada validación no entra al entrenamiento.}
+        \label{img:ventanas}
+        \begin{tikzpicture}[x=2.4cm, y=0.5cm, font=\footnotesize,
+            ent/.style={fill=RoyalBlue!70, draw=white, minimum height=4.5mm, inner sep=0pt},
+            val/.style={fill=amarillo2, draw=white, minimum height=4.5mm, inner sep=0pt},
+            res/.style={fill=silver, draw=white, minimum height=4.5mm, inner sep=0pt}]
+            \foreach \a in {0,...,5} \draw[gray] (\a,0.2) -- (\a,-0.2);
+            \foreach \a/\t in {0.5/2015,1.5/2016,2.5/2017,3.5/2018,4.5/2019} \node at (\a,0.6) {\t};
+            \draw[gray] (0,0) -- (5,0);
+            \node[anchor=east] at (-0.1,-1) {W1};
+            \node[ent, anchor=west, minimum width=0.99*2.4cm] at (0,-1) {entrenamiento};
+            \node[val, anchor=west, minimum width=0.99*2.4cm] at (1,-1) {validación};
+            \node[anchor=east] at (-0.1,-2) {W2};
+            \node[ent, anchor=west, minimum width=1.99*2.4cm] at (0,-2) {entrenamiento};
+            \node[val, anchor=west, minimum width=0.99*2.4cm] at (2,-2) {validación};
+            \node[anchor=east] at (-0.1,-3) {W3};
+            \node[ent, anchor=west, minimum width=2.99*2.4cm] at (0,-3) {entrenamiento};
+            \node[val, anchor=west, minimum width=0.99*2.4cm] at (3,-3) {validación};
+            \node[anchor=east, align=right] at (-0.1,-4) {Final};
+            \node[ent, anchor=west, minimum width=3.99*2.4cm] at (0,-4) {reajuste con 2015--2018};
+            \node[res, anchor=west, minimum width=0.99*2.4cm] at (4,-4) {prueba 2019};
+        \end{tikzpicture}
+\end{figure}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{Ventanas de validación temporal y tamaños (casos completos, suma de los tres países).}
+        \label{tab:ventanas}
+        \small
+        \input{generated/tabla_ventanas}
+\end{table}
+
+\textbf{Control de fuga.} Una fila de entrenamiento exige que su instante objetivo sea anterior a la primera hora de validación, de modo que su respuesta ya fuera conocida al emitir la primera predicción de validación; así se excluyen 24 filas por ventana. Estandarización, codificación y poda se ajustan solo con el entrenamiento de cada ventana. Los hiperparámetros se eligen con las tres ventanas de validación, por lo que el error allí es optimista; la estimación para datos nuevos es la de la reserva.
+
+\textbf{Evaluación final.} Fijado todo, se reajusta con los 103\,680 casos completos de 2015--2018 y se evalúa una sola vez en 2019. Se informan los seis procedimientos, sin usarlos para elegir nada; el Random Forest cíclico es la versión final por la sensibilidad S1 (sección \ref{sec:sens}).
+
+\textbf{Referencias.} \emph{Persistencia}, $\widehat Y_{t+24}=Y_t$, y \emph{estacionalidad semanal}, $\widehat Y_{t+24}=Y_{t+24-168}$ (misma hora de la semana anterior al objetivo); ninguna estima parámetros. En el periodo de desarrollo (2015--2018) la semanal (NMAE macro 0,0537) supera a la persistencia (0,0679) y queda fijada como referencia, aunque en Francia ocurre lo contrario (0,0573 frente a 0,0698).
+
+\subsection{Métricas}
+
+La métrica principal es el \textbf{NMAE macro}: para el país $c$ y la ventana $w$,
+\begin{equation}
+    \mathrm{NMAE}_{c,w}=\frac{\mathrm{MAE}_{c,w}}{\overline{Y}_{c,\mathrm{train}(w)}},\qquad
+    \mathrm{NMAE}^{\mathrm{macro}}_{w}=\frac{1}{3}\sum_{c\in\{\mathrm{DE},\mathrm{ES},\mathrm{FR}\}}\mathrm{NMAE}_{c,w},
+\end{equation}
+con $\overline{Y}_{c,\mathrm{train}(w)}$ la demanda media de la respuesta en el entrenamiento de la ventana (en la reserva, del entrenamiento final). La normalización permite promediar países de escala distinta, y se elige el MAE por su lectura directa en MW y su menor sensibilidad a extremos. Como métricas complementarias se informan MAE y RMSE por país. No se usa MAPE porque pondera más los errores en horas de baja demanda. Todos los procedimientos se evalúan sobre las mismas filas completas de cada ventana; los denominadores están en las tablas de resultados y en el anexo (tabla \ref{tab:ausentes_efecto}).
+
+\subsection{Errores detectados y correcciones}
+
+Para evitar fuga se excluyeron las 24 horas de emisión del 31-dic-2018, se exigió objetivo anterior al inicio de cada validación y los normalizadores se calcularon solo con entrenamiento. Se detectaron y corrigieron errores de interpretación y de redacción que no modifican ninguna cifra: en borradores del informe (un ejemplo de propagación de ausentes invertido, un doble conteo de 167 horas, un pie de figura contrario a los datos y una justificación errónea sobre MAPE) y en dos notas de la síntesis del análisis de 2019 (una indicaba que las horas del 31-dic-2018 se usaron en validación, lo que contradice los 8\,736 orígenes por país de W3; otra decía que se sobreestiman los días posteriores a un feriado, cuando se subestiman). \pend{PENDIENTE: Confirmar con el equipo que no hubo errores de código ni correcciones posteriores a ver los resultados de 2019 (secciones 4.1 y 4.5 del enunciado); si los hubo, agregarlos con su efecto.}

@@ -1,0 +1,14 @@
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{Alemania (DE)} & \multicolumn{3}{c}{España (ES)} & \multicolumn{3}{c}{Francia (FR)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Procedimiento & MAE & RMSE & NMAE & MAE & RMSE & NMAE & MAE & RMSE & NMAE \\
+\midrule
+Persistencia & 4\,553 & 7\,017 & 0{,}0826 & 1\,818 & 2\,790 & 0{,}0638 & 3\,079 & 4\,537 & 0{,}0573 \\
+Estacional semanal & 2\,402 & 4\,262 & 0{,}0436 & 1\,363 & 2\,088 & 0{,}0479 & 3\,750 & 5\,398 & 0{,}0698 \\
+\midrule
+M1: Ridge & 2\,313 & 3\,418 & 0{,}0420 & 1\,215 & 1\,694 & 0{,}0427 & 2\,355 & 3\,260 & 0{,}0438 \\
+M2: Árbol podado & 1\,856 & 3\,275 & 0{,}0337 & 924 & 1\,537 & 0{,}0325 & 2\,260 & 3\,404 & 0{,}0421 \\
+M3: Random Forest (dummies) & 1\,476 & 2\,486 & 0{,}0268 & 710 & 1\,168 & 0{,}0249 & 1\,768 & 2\,630 & 0{,}0329 \\
+\bottomrule
+\end{tabular}
