@@ -118,4 +118,22 @@
     \\ Estacional: referencia estacional semanal. $n$ corresponde a las filas de evaluación del país (en Macro, suma de los tres). Para Francia ambos valores coinciden porque sus fechas son un subconjunto de las de los otros países. El Random Forest cíclico solo se evalúa en 2019.
 \end{table}
 
-\pend{PENDIENTE: Agregar al anexo los resultados de las sensibilidades por país.}
+Los bloques de horas ausentes y su efecto en el NMAE están en las tablas \ref{tab:ausentes_bloques} y \ref{tab:ausentes_efecto}.
+
+\subsection{Sensibilidades por país}
+
+\begin{table}[!htbp]
+    \centering
+        \caption{NMAE por país en los análisis de sensibilidad (periodo de desarrollo 2015--2018) y, entre paréntesis, cambio relativo frente al escenario base del mismo modelo.\label{tab:sens_pais}}
+        \footnotesize
+        \input{generated/tabla_sens_pais}
+    \\ S1: promedio de W1--W3. $^\dagger$ S2: promedio de W2 y W3, porque en W1 ambos esquemas coinciden.
+\end{table}
+
+Las conclusiones de ambas sensibilidades se mantienen en cada país. En S1, el calendario cíclico mejora al Random Forest en los tres (de 2,3\,\% en DE a 5,6\,\% en ES) y empeora a Ridge en los tres (9,4\,\% a 12,7\,\%). En S2, usar solo el último año empeora al Random Forest en los tres países, sobre todo en Francia (12,9\,\%), mientras que en Ridge los cambios son menores a 2\,\%.
+
+\subsection{Costo computacional: CPU frente a GPU} \label{sec:gpu}
+
+Se midió el tiempo de reloj de cada sección (\texttt{src/timing.py}) en un computador con CPU AMD Ryzen 5 9600X (12 núcleos lógicos) y GPU NVIDIA RTX 5060 (8 GB), en Ubuntu 24.04 (WSL2), y se repitió con la GPU mediante RAPIDS cuML (\texttt{docs/tiempos\_cpu\_gpu.md}); es una sola ejecución por configuración. Con el acelerador automático (\texttt{analisis.py --gpu}), los pasos 3 a 6 tardaron 633 s en CPU y 719 s con GPU (0,88 veces la velocidad de la CPU): Ridge pagó 13 s de inicialización y el árbol y el Random Forest con indicadores casi no cambiaron (134 frente a 139 s en W1--W3), lo que sugiere que siguieron en CPU (cuML no tiene árbol con poda; para el bosque, una explicación plausible, no verificada, es la matriz dispersa de los indicadores).
+
+Forzando los modelos a la GPU (\texttt{src/benchmark\_gpu.py}: cuML directo, matriz densa \texttt{float32}, W1--W3 y la misma profundidad máxima en ambos motores, pues cuML exige una finita), el Random Forest fue de 0,31 a 0,86 veces la velocidad de la CPU y Ridge 0,43 veces, con NMAE que difiere menos de 0,5\,\% (detalle en \texttt{results/tiempos/benchmark\_gpu\_resumen\_\_FrostyDesktop.csv}). La GPU fue más lenta con árboles profundos y con indicadores, y su desventaja se reduce al crecer el entrenamiento (Random Forest cíclico de profundidad 16: 0,52 en W1, 0,88 en W2 y 1,06 en W3), por lo que podría convenir con muchas más filas, no con unas 100\,000. La ganancia relevante fue otra: el Random Forest oficial con matriz densa tardó 18 s en W1--W3, frente a 134 s con la matriz dispersa del \textit{pipeline}, con igual NMAE (0,02821); este cambio no se aplicó a los resultados del informe.

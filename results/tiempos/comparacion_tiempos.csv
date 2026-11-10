@@ -1,0 +1,35 @@
+notebook,orden,seccion,seg_cpu,seg_gpu,aceleracion_x,ahorro_seg
+03_run_validation,1,Carga y particiones,0.66,0.61,1.0819672131147542,0.050000000000000044
+03_run_validation,2,Ridge · W1 (ajuste + prediccion),0.04,13.16,0.00303951367781155,-13.120000000000001
+03_run_validation,3,Decision Tree · W1 (ajuste + prediccion),2.75,2.68,1.0261194029850746,0.06999999999999984
+03_run_validation,4,Random Forest · W1 (ajuste + prediccion),12.85,13.12,0.9794207317073171,-0.2699999999999996
+03_run_validation,5,Ridge · W2 (ajuste + prediccion),0.04,0.27,0.14814814814814814,-0.23
+03_run_validation,6,Decision Tree · W2 (ajuste + prediccion),11.64,11.88,0.9797979797979798,-0.2400000000000002
+03_run_validation,7,Random Forest · W2 (ajuste + prediccion),40.52,41.57,0.9747414000481117,-1.0499999999999972
+03_run_validation,8,Ridge · W3 (ajuste + prediccion),0.05,0.23,0.21739130434782608,-0.18
+03_run_validation,9,Decision Tree · W3 (ajuste + prediccion),25.99,26.49,0.981124952812382,-0.5
+03_run_validation,10,Random Forest · W3 (ajuste + prediccion),80.29,83.86,0.9574290484140234,-3.569999999999993
+03_run_validation,11,Ciclo W1-W3 completo y exportacion (incluye los ajustes de abajo),174.42,193.44,0.9016749379652604,-19.02000000000001
+03_run_validation,12,TOTAL,175.08,194.05,0.9022416902860088,-18.97
+04_sensitivity_analysis,1,Preparacion,1.5,0.82,1.829268292682927,0.68
+04_sensitivity_analysis,2,1. Codificación del calendario,150.19,183.94,0.8165162553006415,-33.75
+04_sensitivity_analysis,3,2. Longitud de la historia de entrenamiento,40.89,44.48,0.9192895683453238,-3.5899999999999963
+04_sensitivity_analysis,4,Export,0.27,0.21,1.2857142857142858,0.060000000000000026
+04_sensitivity_analysis,5,TOTAL,192.85,229.45,0.8404881237742428,-36.599999999999994
+05_diagnostics_uncertainty,1,Preparacion,1.56,0.98,1.5918367346938775,0.5800000000000001
+05_diagnostics_uncertainty,2,Ajuste final y predicción sobre la reserva,202.54,216.72,0.9345699520118125,-14.180000000000007
+05_diagnostics_uncertainty,3,"Métricas en la reserva: MAE, RMSE y NMAE por país",0.15,0.79,0.18987341772151897,-0.64
+05_diagnostics_uncertainty,4,Diagnóstico de errores,0.27,0.31,0.870967741935484,-0.03999999999999998
+05_diagnostics_uncertainty,5,Días con mayor error,0.39,0.55,0.7090909090909091,-0.16000000000000003
+05_diagnostics_uncertainty,6,Incertidumbre de la diferencia con la referencia,0.23,0.24,0.9583333333333334,-0.009999999999999981
+05_diagnostics_uncertainty,7,TOTAL,205.15,219.59,0.9342410856596385,-14.439999999999998
+06_complementary_analyses,1,Preparacion,1.34,0.76,1.7631578947368423,0.5800000000000001
+06_complementary_analyses,2,Funciones,0.03,0.03,1.0,0.0
+06_complementary_analyses,3,1. Bootstrap con bloques de 7 días: todos los comparadores,0.19,0.19,1.0,0.0
+06_complementary_analyses,4,2. Sensibilidad al largo del bloque,0.92,0.98,0.9387755102040817,-0.05999999999999994
+06_complementary_analyses,5,3. Tablas de las búsquedas de hiperparámetros,0.02,0.03,0.6666666666666667,-0.009999999999999998
+06_complementary_analyses,6,4. Tamaños de las ventanas de validación,0.08,0.08,1.0,0.0
+06_complementary_analyses,7,5. Modelo final: complejidad e importancia de los predictores,57.05,72.95,0.7820424948594927,-15.900000000000006
+06_complementary_analyses,8,6. Correlación entre predictores,0.03,0.03,1.0,0.0
+06_complementary_analyses,9,7. Datos ausentes: dónde caen y si sesgan la comparación entre países,0.43,0.96,0.4479166666666667,-0.53
+06_complementary_analyses,10,TOTAL,60.08,76.02,0.7903183372796633,-15.939999999999998

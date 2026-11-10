@@ -20,10 +20,14 @@ Uso:
     python analisis.py --pasos 1,2,7,8         # pasos elegidos
     python analisis.py --busqueda-completa     # repite la busqueda de hiperparametros (notebook 03)
     python analisis.py --sin-pdf               # omite la compilacion LaTeX
+    python analisis.py --gpu --sin-pdf         # mismo analisis con GPU NVIDIA via RAPIDS cuML (Linux/WSL2);
+                                               # ver docs/tiempos_cpu_gpu.md
 
 Salidas:
     results/                       resultados (CSV) y figuras
     results/run_info.json          entorno, tiempos por etapa y tiempo total (solo si se ejecutan los pasos 1 a 6)
+                                   (con --gpu se guarda en results/tiempos/run_info_gpu.json y no pisa el oficial)
+    results/tiempos/               tiempo por seccion de cada notebook/script, por backend y equipo
     results/concordancia.csv       diferencia entre los resultados regenerados y los que habia antes de ejecutar
     results/ejecucion/             registros (.log) y copias ejecutadas de los notebooks (no se versionan)
     reports/informe/main.pdf       informe
@@ -294,7 +298,17 @@ def main():
     ap.add_argument("--busqueda-completa", action="store_true",
                     help="repite la busqueda de hiperparametros ejecutando el notebook 03 (varias horas)")
     ap.add_argument("--sin-pdf", action="store_true", help="omite la compilacion del PDF (paso 8)")
+    ap.add_argument("--gpu", action="store_true",
+                    help="ejecuta scikit-learn en GPU NVIDIA mediante cuml.accel (requiere RAPIDS cuML)")
     args = ap.parse_args()
+
+    # El backend se hereda por los scripts y los kernels de los notebooks (ver src/timing.py)
+    os.environ["EYP_BACKEND"] = "gpu" if args.gpu else os.environ.get("EYP_BACKEND", "cpu")
+    if os.environ["EYP_BACKEND"] == "gpu":
+        try:
+            import cuml  # noqa: F401
+        except ImportError:
+            sys.exit("--gpu requiere RAPIDS cuML (Linux o WSL2 con GPU NVIDIA). Ver docs/tiempos_cpu_gpu.md.")
 
     steps = build_steps(args.busqueda_completa)
     if args.solo_informe:
@@ -312,9 +326,20 @@ def main():
     EJEC.mkdir(parents=True, exist_ok=True)
     prepare_kernel()
     snap = snapshot_results()
+    gpu = os.environ["EYP_BACKEND"] == "gpu"
+    if gpu:
+        # Los resultados oficiales (CPU) no deben quedar reemplazados por los de la corrida en GPU:
+        # se respaldan aqui y se restauran al terminar, aunque haya error.
+        respaldo = EJEC / "respaldo_resultados_cpu"
+        if respaldo.exists():
+            shutil.rmtree(respaldo)
+        shutil.copytree(RESULTS, respaldo, ignore=shutil.ignore_patterns("ejecucion", "tiempos"))
 
+    sys.path.insert(0, str(SRC))
+    import timing
     info = {"inicio": datetime.now().isoformat(timespec="seconds"),
             "comando": " ".join(sys.argv),
+            "backend": os.environ["EYP_BACKEND"], **timing.info_gpu(),
             "sistema": {"plataforma": platform.platform(), "procesador": cpu_name(),
                         "nucleos_logicos": os.cpu_count(), "memoria_gb": ram_gb()},
             "python": sys.version.split()[0], "paquetes": package_versions(), "xelatex": xelatex_version(),
@@ -341,11 +366,24 @@ def main():
         info["fin"] = datetime.now().isoformat(timespec="seconds")
         # el registro de la ejecucion completa queda en results/run_info.json; las parciales no lo pisan
         full = set(range(1, 7)) <= chosen
-        target = RESULTS / "run_info.json" if full else EJEC / "run_info_parcial.json"
+        if os.environ["EYP_BACKEND"] == "gpu":
+            (RESULTS / "tiempos").mkdir(parents=True, exist_ok=True)
+            target = RESULTS / "tiempos" / ("run_info_gpu.json" if full else "run_info_gpu_parcial.json")
+        else:
+            target = RESULTS / "run_info.json" if full else EJEC / "run_info_parcial.json"
         target.write_text(json.dumps(info, indent=2, ensure_ascii=False), encoding="utf-8")
         log(f"Registro guardado en {target} (total {info['segundos_totales'] / 60:.1f} min)")
 
-    if chosen & {3, 4, 5, 6}:
+        if gpu:
+            if chosen & {3, 4, 5, 6}:
+                comp = compare_results(snap)
+                shutil.copy2(RESULTS / "concordancia.csv", RESULTS / "tiempos" / "concordancia_gpu.csv")
+                log("Diferencias GPU vs. resultados oficiales (results/tiempos/concordancia_gpu.csv):")
+                print(comp.to_string(index=False), flush=True)
+            shutil.copytree(respaldo, RESULTS, dirs_exist_ok=True)
+            log("Resultados oficiales (CPU) restaurados; los tiempos GPU quedan en results/tiempos/")
+
+    if chosen & {3, 4, 5, 6} and not gpu:
         comp = compare_results(snap)
         log("Concordancia con los resultados previos (results/concordancia.csv):")
         print(comp.to_string(index=False), flush=True)

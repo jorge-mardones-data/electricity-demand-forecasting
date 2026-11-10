@@ -293,6 +293,37 @@ write("tabla_sens.tex", "\n".join([
     "Análisis & Escenario & W1 & W2 & W3 & Promedio & Cambio vs. base \\\\", "\\midrule",
     *lines, "\\bottomrule", "\\end{tabular}"]))
 
+# ------------------------------------------------- Anexo: sensibilidades S1 y S2 por país
+sc = sens[sens["country"].isin(C)]
+
+
+def sens_country(analysis, model, scenario, windows):
+    d = sc[(sc["analysis"] == analysis) & (sc["model"] == model) & (sc["scenario"] == scenario)
+           & (sc["window"].isin(windows))]
+    return d.groupby("country")["NMAE"].mean().reindex(C)
+
+
+def cell(v, b=None):
+    return num(v) if b is None else f"{num(v)} ({pct(100 * (v / b - 1))})"
+
+
+lines = []
+for analysis, label, scen_base, scen_alt, alt_label, wins in [
+        ("A_calendar", "S1: calendario", "Dummy", "Cíclico", "cíclico", ["W1", "W2", "W3"]),
+        ("B_history", "S2: historia$^\\dagger$", "Dummy", "Último año", "último año", ["W2", "W3"])]:
+    base_label = "dummies (base)" if analysis == "A_calendar" else "ventana creciente (base)"
+    for m in ["Random Forest", "Ridge"]:
+        b = sens_country("A_calendar", m, scen_base, wins)
+        a = sens_country(analysis, m, scen_alt, wins)
+        lines.append(f"{label} & {m}, {base_label} & " + " & ".join(cell(b[c]) for c in C) + " \\\\")
+        lines.append(f" & {m}, {alt_label} & " + " & ".join(cell(a[c], b[c]) for c in C) + " \\\\")
+    if analysis == "A_calendar":
+        lines.append("\\midrule")
+write("tabla_sens_pais.tex", "\n".join([
+    "\\begin{tabular}{llrrr}", "\\toprule",
+    "Análisis & Escenario & DE & ES & FR \\\\", "\\midrule",
+    *lines, "\\bottomrule", "\\end{tabular}"]))
+
 # ------------------------------------------------- Datos de la reserva 2019
 test = pd.read_csv(RESULTS / "test_results.csv")
 tm = test.set_index(["model", "country"])

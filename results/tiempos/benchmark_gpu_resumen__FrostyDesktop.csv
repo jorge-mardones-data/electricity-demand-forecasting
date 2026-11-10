@@ -1,0 +1,13 @@
+modelo,motor,seg_total_W1_W3,NMAE_macro_medio,aceleracion_vs_CPU_mismo_modelo
+Ridge,CPU sklearn,0.044,0.04281798329437212,1.0
+Ridge,GPU cuML,0.10300000000000001,0.04281692958142732,0.43
+RF dummy · oficial (sin limite),CPU sklearn,18.233999999999998,0.028209853967663637,1.0
+RF dummy · max_depth=16,CPU sklearn,15.524000000000001,0.02831537199179787,1.0
+RF dummy · max_depth=16,GPU cuML,26.384,0.028441224240218697,0.59
+RF dummy · max_depth=32,CPU sklearn,18.575,0.028202801506607627,1.0
+RF dummy · max_depth=32,GPU cuML,59.673,0.028297339945983185,0.31
+RF cyclic · oficial (sin limite),CPU sklearn,16.273,0.02709319492155712,1.0
+RF cyclic · max_depth=16,CPU sklearn,13.522000000000002,0.02715993077169776,1.0
+RF cyclic · max_depth=16,GPU cuML,15.715,0.027237233445581353,0.86
+RF cyclic · max_depth=32,CPU sklearn,15.581,0.0271116693608169,1.0
+RF cyclic · max_depth=32,GPU cuML,33.454,0.027215308839115288,0.47
