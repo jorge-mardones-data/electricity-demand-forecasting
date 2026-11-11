@@ -58,10 +58,20 @@
 
 \begin{table}[!htbp]
     \centering
-        \caption{Tiempo de ajuste final de cada procedimiento con el periodo de desarrollo completo (2015--2018).\label{tab:tiempos}}
+    \begin{minipage}[t]{0.44\textwidth}
+        \caption{Ajuste final de cada procedimiento con 2015--2018 (s).\label{tab:tiempos}}
         \small
-        \input{generated/tabla_tiempos}
+        \resizebox{\linewidth}{!}{\input{generated/tabla_tiempos}}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.52\textwidth}
+        \caption{Pasos 3 a 6 de \texttt{analisis.py} (s) en el computador A y en el B, en CPU y en GPU.\label{tab:tiempos_equipos}}
+        \small
+        \resizebox{\linewidth}{!}{\input{generated/tabla_tiempos_equipos}}
+    \end{minipage}
+    \\ \textit{\scriptsize{A: i5-14600K, Windows 11 (\texttt{results/run\_info.json}, incluye el arranque de los notebooks). B: Ryzen 5 9600X y RTX 5060 (8 GB), Ubuntu 24.04 en WSL2; cronómetros por sección (\texttt{results/tiempos/}). GPU: RAPIDS cuML (\texttt{cuml.accel}). Una ejecución por configuración.}}
 \end{table}
+
+\textbf{CPU frente a GPU.} En B, la GPU no redujo el tiempo (0,88 veces la velocidad de la CPU): los modelos de árboles siguieron casi iguales y Ridge pagó 13 s de inicialización. Forzando los modelos a la GPU con cuML (\texttt{src/benchmark\_gpu.py}: matriz densa y la misma profundidad máxima en ambos motores, W1--W3), el Random Forest fue de 0,31 a 0,86 veces la velocidad de la CPU, con NMAE que difiere menos de 0,5\,\%; la desventaja se reduce al crecer el entrenamiento (0,52 en W1 a 1,06 en W3, profundidad 16, calendario cíclico). Con unas 100\,000 filas la CPU es suficiente. En la CPU, la matriz densa redujo el Random Forest de 134 a 18 s en W1--W3 con igual NMAE; no se aplicó a los resultados.
 
 \begin{table}[!htbp]
     \centering

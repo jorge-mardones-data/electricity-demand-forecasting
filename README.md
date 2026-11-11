@@ -18,6 +18,7 @@ Paquete entregado para el caso 03, basado en *Open Power System Data* (OPSD), se
 | `src/build_dataset.py` | Base país–hora: respuesta, predictores y periodos |
 | `src/modeling.py` | Particiones, especificación de los modelos y métricas compartidas |
 | `src/run_validation.py` | Validación W1–W3 con los hiperparámetros fijados |
+| `src/timing.py`, `src/benchmark_gpu.py` | Medición de tiempos y experimento opcional CPU vs. GPU (RAPIDS cuML, Linux/WSL2); resultados en `results/tiempos/` |
 | `src/make_report_assets.py` | Tablas (`.tex`) y figuras del informe, a partir de `results/` |
 | `notebooks/` | 02 diseño experimental; 03 desarrollo de modelos y búsqueda de hiperparámetros; 04 sensibilidades; 05 reserva 2019, incertidumbre y diagnóstico; 06 análisis complementarios |
 | `results/` | Resultados (CSV) y figuras generados |
@@ -73,7 +74,7 @@ El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_e
 |---|---|---|---|
 | 9-nov-2026 | Computador del autor del informe (Windows 11, Intel Core i5-14600K, 31,7 GB, Python 3.11.9): ejecución completa que genera los resultados del informe | `python analisis.py` | Sin errores, 12,2 min. Registro en `results/run_info.json` y `results/concordancia.csv` |
 | 9-nov-2026 | Copia limpia de la carpeta del repositorio (sin `.git` ni registros previos), mismo computador | `python analisis.py` | Sin errores, 13,8 min, misma concordancia que la ejecución principal |
-| _pendiente_ | Computador de otro integrante | `python analisis.py` | _por registrar (fecha, resultado y concordancia)_ |
+| 10-nov-2026 | Computador de otro integrante (AMD Ryzen 5 9600X, 12 núcleos lógicos, Ubuntu 24.04 en WSL2) | `python analisis.py --sin-pdf` | Sin errores; pasos 3 a 6 en 10,6 min (11,9 min en el computador principal); diferencias < 1,4 % de la escala de cada archivo. Registro en `results/tiempos/` |
 
 ## Contribuciones
 
