@@ -1,0 +1,3 @@
+# Archivos binarios: evitar conversiones de fin de linea que los dañan
+*.pdf binary
+*.png binary
