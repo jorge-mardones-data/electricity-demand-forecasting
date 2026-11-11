@@ -30,3 +30,4 @@ desktop.ini
 
 # Registros y copias ejecutadas generadas por analisis.py
 results/ejecucion/
+tmp_tests/

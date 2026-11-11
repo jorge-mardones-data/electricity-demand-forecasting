@@ -51,7 +51,9 @@ NB_DIR = ROOT / "notebooks"
 RESULTS = ROOT / "results"
 EJEC = RESULTS / "ejecucion"
 INFORME = ROOT / "reports" / "informe"
+PRESENTACION = ROOT / "reports" / "presentacion"
 KERNEL_NAME = "analisis_eyp3407"
+
 
 # Resultados que se comparan con los existentes antes de la ejecucion (concordancia con el informe),
 # con las columnas que identifican cada fila.
@@ -106,17 +108,18 @@ def run_notebook(name):
     nbformat.write(nb, EJEC / name)
 
 
-def compile_pdf():
+def compile_pdf(target_dir=INFORME, label="Informe"):
     if shutil.which("xelatex") is None:
         raise RuntimeError("No se encontro xelatex. Instale TeX Live o MiKTeX y vuelva a ejecutar "
                            "con --pasos 8, o use --sin-pdf.")
-    with open(EJEC / "xelatex.log", "w", encoding="utf-8") as f:
-        for _ in range(2):  # dos pasadas para resolver referencias cruzadas
-            proc = subprocess.run(["xelatex", "-interaction=nonstopmode", "main.tex"], cwd=INFORME,
+    log_name = "xelatex.log" if target_dir == INFORME else f"xelatex_{target_dir.name}.log"
+    with open(EJEC / log_name, "w", encoding="utf-8") as f:
+        for _ in range(2):
+            proc = subprocess.run(["xelatex", "-interaction=nonstopmode", "main.tex"], cwd=target_dir,
                                   stdout=f, stderr=subprocess.STDOUT)
-    if not (INFORME / "main.pdf").exists():
-        raise RuntimeError(f"No se genero el PDF (ver {EJEC / 'xelatex.log'}).")
-    log(f"Informe: {INFORME / 'main.pdf'}")
+    if not (target_dir / "main.pdf").exists():
+        raise RuntimeError(f"No se genero el PDF (ver {EJEC / log_name}).")
+    log(f"{label}: {target_dir / 'main.pdf'}")
 
 
 # ------------------------------------------------------------------------------ pasos
@@ -154,7 +157,8 @@ def step_assets():
 
 def step_pdf():
     compile_pdf()
-
+    if (PRESENTACION / "main.tex").exists():
+        compile_pdf(PRESENTACION, "Presentacion")
 
 def build_steps(full_search):
     return [

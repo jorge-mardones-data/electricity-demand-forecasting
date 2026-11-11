@@ -20,9 +20,11 @@ Paquete entregado para el caso 03, basado en *Open Power System Data* (OPSD), se
 | `src/run_validation.py` | Validación W1–W3 con los hiperparámetros fijados |
 | `src/timing.py`, `src/benchmark_gpu.py` | Medición de tiempos y experimento opcional CPU vs. GPU (RAPIDS cuML, Linux/WSL2); resultados en `results/tiempos/` |
 | `src/make_report_assets.py` | Tablas (`.tex`) y figuras del informe, a partir de `results/` |
+| `src/make_presentation_assets.py` | Tablas (`.tex`) y figuras del informe, a partir de `results/` |
 | `notebooks/` | 02 diseño experimental; 03 desarrollo de modelos y búsqueda de hiperparámetros; 04 sensibilidades; 05 reserva 2019, incertidumbre y diagnóstico; 06 análisis complementarios |
 | `results/` | Resultados (CSV) y figuras generados |
 | `reports/informe/` | Informe en LaTeX (XeLaTeX) y su PDF |
+| `reports/presentacion/` | Presentación en LaTeX (XeLaTeX) y su PDF `generated/`y `img/` contienen las tablas y figuras respectivamente |
 | `docs/protocolo_experimental.md` | Protocolo experimental |
 
 ## Reproducción con un solo comando
@@ -86,8 +88,11 @@ El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_e
 ## Uso de inteligencia artificial
 
 Se usó Claude Code (Anthropic) el 8 y 9 de noviembre de 2026 para el borrador y recorte del informe, la integración de resultados, y los archivos `src/make_report_assets.py`, `src/run_validation.py`, `analisis.py`, `README.md`, `requirements.txt` y el notebook 06. La declaración completa, con las comprobaciones realizadas, está en la sección 7 del informe.
+
 Sea usó ChatGPT (OpenAI) el 4-8 de noviembre de 2026 como apoyo estructural del repositorio, así como también para exploración de datos, construccion de la base e implementación de modelos. En los archivos `docs/protocolo_experimental.md`, `src/audit_data.py`, `src/build_dataset.py`, `notebooks/02_experimental_design.ipynb` y `notebooks/03_model_development.ipynb`.
 
+Se uso Claude Code (Anthropic), 8-10 nov. 2026: diseño y estructura de la presentación `reports/presentacion/`, script de assets para la presentación `make_presentation_assets.py`, corrección de flotantes del anexo y tabla de sensibilidad por país en el informe.
+Se uso Claude (Anthropic, modo Cowork), 8-10 nov. 2026: primera versión de los notebooks 04-05 y de `src/modeling.py` (verificado contra el NMAE del notebook 03), y medición de tiempos CPU/GPU.
 ## Contexto académico
 
 EYP3407 – Tópicos Aplicados a la Estadística, Pontificia Universidad Católica de Chile. Profesor: Eloy Alvarado. Ayudante: Andrés Díaz.
