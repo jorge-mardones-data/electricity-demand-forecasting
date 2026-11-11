@@ -1,0 +1,10 @@
+archivo,filas_anteriores,filas_nuevas,dif_abs_max,dif_rel_max_escala,estado
+validation_results.csv,60,60,0.45733898378330196,9.719242025000018e-05,difiere levemente (< 1 % de la escala)
+global_comparison.csv,5,5,2.7922393501002285e-06,0.00018688026557303397,difiere levemente (< 1 % de la escala)
+sensitivity_results.csv,72,72,9.717737480372307,0.0038211879995068963,difiere levemente (< 1 % de la escala)
+test_results.csv,24,24,7.447850727260629,0.0013512363101103998,difiere levemente (< 1 % de la escala)
+test_main_table.csv,4,4,7.447850727260629,0.004734137280712586,difiere levemente (< 1 % de la escala)
+test_bootstrap_ci.csv,5,5,0.0008167405224320801,0.0014896733244602692,difiere levemente (< 1 % de la escala)
+test_bootstrap_extra.csv,16,16,0.0055007166659396985,0.011628230164993402,difiere
+bootstrap_block_length.csv,20,20,0.0014505058805462934,0.0030266122523760516,difiere levemente (< 1 % de la escala)
+test_diagnostics.csv,24,24,29.493888497212538,0.01331787855787451,difiere

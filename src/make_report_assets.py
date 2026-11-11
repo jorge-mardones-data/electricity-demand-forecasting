@@ -409,6 +409,29 @@ write("tabla_tiempos.tex", "\n".join([
     "\\begin{tabular}{lr}", "\\toprule", "Procedimiento & Ajuste final (s) \\\\", "\\midrule",
     *lines, "\\bottomrule", "\\end{tabular}"]))
 
+# ------------------------------------------------- Tiempos por paso: dos computadores (CPU) y GPU
+# A: ejecucion principal (results/run_info.json). B: computador de otro integrante, CPU y GPU (RAPIDS
+# cuML, cuml.accel), medidos con cronometros por seccion (results/tiempos/).
+_ri = RESULTS / "run_info.json"
+_tb = RESULTS / "tiempos" / "comparacion_tiempos_cpu_gpu_FrostyDesktop.csv"
+if _ri.exists() and _tb.exists():
+    import json as _json
+    _ea = {e["paso"]: e["segundos"] for e in _json.loads(_ri.read_text(encoding="utf-8"))["etapas"]}
+    _tt = pd.read_csv(_tb)
+    _tt = _tt[_tt["seccion"] == "TOTAL"].set_index("notebook")
+    _nb = {3: "03_run_validation", 4: "04_sensitivity_analysis",
+           5: "05_diagnostics_uncertainty", 6: "06_complementary_analyses"}
+    _names = {3: "3. Validación", 4: "4. Sensibilidades", 5: "5. Reserva 2019", 6: "6. Complementarios"}
+    _bc = {k: _tt.loc[v, "seg_cpu"] for k, v in _nb.items()}
+    _bg = {k: _tt.loc[v, "seg_gpu"] for k, v in _nb.items()}
+    lines = [f"{_names[k]} & {num(_ea[k], 0)} & {num(_bc[k], 0)} & {num(_bg[k], 0)} \\\\" for k in _names]
+    lines += ["\\midrule", f"Total & {num(sum(_ea[k] for k in _names), 0)} & "
+              f"{num(sum(_bc.values()), 0)} & {num(sum(_bg.values()), 0)} \\\\"]
+    write("tabla_tiempos_equipos.tex", "\n".join([
+        "\\begin{tabular}{lrrr}", "\\toprule",
+        "Paso & A, CPU & B, CPU & B, GPU \\\\", "\\midrule",
+        *lines, "\\bottomrule", "\\end{tabular}"]))
+
 # ------------------------------------------------- Bootstrap por bloques semanales (predicciones fijas)
 ft = base[(base["period"] == "development") & base["complete"]
           & (base["target_timestamp"] < pd.Timestamp("2019-01-01", tz="UTC"))]
