@@ -80,7 +80,7 @@ El archivo `data/raw/demanda_horaria.csv` proviene del paquete `caso03_demanda_e
 - **Jorge Mardones:** creación y estructuración del repositorio y todo el contenido de su primera versión (datos, base analítica, protocolo experimental, notebooks 02 y 03).
 - **Benjamín Ruiz:** secciones 3.3, 4.1 y 4.2 del enunciado (sensibilidades, evaluación en la reserva y métricas; notebooks 04 y 05 y `src/modeling.py`) y ejecución de la comparación de modelos.
 - **Matías Pineda:** informe, análisis complementarios (notebook 06), tablas y figuras, `analisis.py`, `README.md` y `requirements.txt`.
-- **Diego Paredes:** presentación del trabajo.
+- **Diego Paredes:** presentación del trabajo (`reports/presentacion/main.tex`, `style.tex` y `src/make_presentation_assets.py`, con sus figuras y tablas).
 
 ## Uso de inteligencia artificial
 

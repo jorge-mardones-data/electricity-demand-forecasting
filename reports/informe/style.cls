@@ -3,7 +3,7 @@
 \LoadClass[10pt]{article}  % 10pt para cumplir el limite de paginas del cuerpo (antes: 11pt)
 \RequirePackage{fullpage}
 \RequirePackage[spanish, es-noshorthands]{babel}
-\RequirePackage[letterpaper, left=2.5cm, right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\RequirePackage[letterpaper, left=2.5cm, right=2.5cm,top=2.2cm,bottom=2.5cm]{geometry}
 \selectlanguage{spanish}
 
 %----------------------------- TEXTO ---------------------------
@@ -32,6 +32,7 @@
 %--------------------------- IMÁGENES ---------------------------
 \RequirePackage{threeparttable}             % Permite alinear imagenes con el caption
 \RequirePackage{float}                      % Posicionar figuras: H, h!, b...
+\RequirePackage{placeins}                   % \FloatBarrier: evita que las figuras/tablas floten a otra subsección
 \RequirePackage{graphicx}                   % Agregar características a las imágenes 
 \RequirePackage{epsfig}                     % Paquete relacionado con graphicx (es una especie de envoltorio)
 \RequirePackage{caption}                    % Agregar caption a las figuras

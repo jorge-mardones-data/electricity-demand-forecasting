@@ -17,6 +17,7 @@
         \includegraphics[width=0.95\textwidth]{img/fig_descriptiva.pdf}
 \end{figure}
 
+\FloatBarrier
 \subsection{Resultados completos de validación}
 
 \begin{table}[!htbp]
@@ -25,6 +26,7 @@
         \resizebox{\textwidth}{!}{\input{generated/tabla_detalle}}
 \end{table}
 
+\FloatBarrier
 \subsection{Búsqueda de hiperparámetros}
 
 \begin{table}[!htbp]
@@ -44,6 +46,7 @@
         \input{generated/tabla_rf_busqueda}
 \end{table}
 
+\FloatBarrier
 \subsection{Complejidad, costo e importancia del modelo final}
 
 \begin{table}[!htbp]
@@ -67,6 +70,7 @@
         \input{generated/tabla_importancia}
 \end{table}
 
+\FloatBarrier
 \subsection{Incertidumbre y diagnóstico}
 
 \begin{figure}[!htbp]
@@ -83,6 +87,7 @@
     \\ Sesgo = predicción menos observado (positivo: sobreestimación). Los nombres de los feriados provienen del calendario oficial, no de los datos.
 \end{table}
 
+\FloatBarrier
 \subsection{Resultados completos de la evaluación en 2019}
 
 \begin{table}[!htbp]
@@ -91,6 +96,7 @@
         \resizebox{\textwidth}{!}{\input{generated/tabla_test_detalle}}
 \end{table}
 
+\FloatBarrier
 \subsection{Correlación entre predictores}
 
 \begin{table}[!htbp]
@@ -101,6 +107,7 @@
     \\ La última fila es la correlación con la respuesta \texttt{target\_demand\_mw}.
 \end{table}
 
+\FloatBarrier
 \subsection{Datos ausentes}
 
 \begin{table}[!htbp]
@@ -118,4 +125,10 @@
     \\ Estacional: referencia estacional semanal. $n$ corresponde a las filas de evaluación del país (en Macro, suma de los tres). Para Francia ambos valores coinciden porque sus fechas son un subconjunto de las de los otros países. El Random Forest cíclico solo se evalúa en 2019.
 \end{table}
 
-\pend{PENDIENTE: Agregar al anexo los resultados de las sensibilidades por país.}
+\begin{table}[!htbp]
+    \centering
+        \caption{Cambio del NMAE por país en los análisis de sensibilidad S1 y S2 (sección \ref{sec:sens}) frente al escenario base de cada modelo.\label{tab:sens_pais}}
+        \small
+        \input{generated/tabla_sens_pais}
+    \\ S1 mejora en los tres países con el Random Forest y empeora en los tres con Ridge. En S2, Francia es más sensible a entrenar solo con el último año que Alemania.
+\end{table}

@@ -293,6 +293,43 @@ write("tabla_sens.tex", "\n".join([
     "Análisis & Escenario & W1 & W2 & W3 & Promedio & Cambio vs. base \\\\", "\\midrule",
     *lines, "\\bottomrule", "\\end{tabular}"]))
 
+# ------------------------------------------------- T8b: sensibilidades S1 y S2 por país
+sc = sens[sens["country"] != "Macro"]
+COUNTRY_ORDER = ["DE", "ES", "FR"]
+base_a_c = {(m, c): sc[(sc["analysis"] == "A_calendar") & (sc["model"] == m) & (sc["scenario"] == "Dummy")
+                       & (sc["country"] == c)].sort_values("window")["NMAE"].to_numpy()
+            for m in ["Random Forest", "Ridge"] for c in COUNTRY_ORDER}
+alt_a_c = {(m, c): sc[(sc["analysis"] == "A_calendar") & (sc["model"] == m) & (sc["scenario"] != "Dummy")
+                      & (sc["country"] == c)].sort_values("window")["NMAE"].to_numpy()
+           for m in ["Random Forest", "Ridge"] for c in COUNTRY_ORDER}
+alt_b_c = {(m, c): sc[(sc["analysis"] == "B_history") & (sc["model"] == m) & (sc["country"] == c)]
+           .sort_values("window")["NMAE"].to_numpy() for m in ["Random Forest", "Ridge"] for c in COUNTRY_ORDER}
+lines = []
+for c in COUNTRY_ORDER:
+    cells = []
+    for m in ["Random Forest", "Ridge"]:
+        b, a = base_a_c[(m, c)], alt_a_c[(m, c)]
+        cells.append(pct(100 * (a.mean() / b.mean() - 1)))
+    for m in ["Random Forest", "Ridge"]:
+        b, a = base_a_c[(m, c)], alt_b_c[(m, c)]
+        cells.append(pct(100 * (a[1:].mean() / b[1:].mean() - 1)))
+    lines.append(f"{c} & " + " & ".join(cells) + " \\\\")
+lines.append("\\midrule")
+cells = []
+for m in ["Random Forest", "Ridge"]:
+    b, a = base_a[m], alt_a[m]
+    cells.append(pct(100 * (a.mean() / b.mean() - 1)))
+for m in ["Random Forest", "Ridge"]:
+    b, a = base_a[m], alt_b[m]
+    cells.append(pct(100 * (a[1:].mean() / b[1:].mean() - 1)))
+lines.append("Macro & " + " & ".join(cells) + " \\\\")
+write("tabla_sens_pais.tex", "\n".join([
+    "\\begin{tabular}{lrrrr}", "\\toprule",
+    " & \\multicolumn{2}{c}{S1: calendario cíclico} & \\multicolumn{2}{c}{S2: último año} \\\\",
+    "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
+    "País & Random Forest & Ridge & Random Forest & Ridge \\\\",
+    "\\midrule", *lines, "\\bottomrule", "\\end{tabular}"]))
+
 # ------------------------------------------------- Datos de la reserva 2019
 test = pd.read_csv(RESULTS / "test_results.csv")
 tm = test.set_index(["model", "country"])

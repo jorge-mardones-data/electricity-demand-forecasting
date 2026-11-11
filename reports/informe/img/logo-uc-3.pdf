@@ -1,11 +1,41 @@
 %PDF-1.7
-
+%‚„œ”
 1 0 obj
-  << >>
+<<
+/Producer (pypdf)
+>>
 endobj
-
 2 0 obj
-  << /Length 3 0 R >>
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Annots [ ]
+/Type /Page
+/MediaBox [ 0.0 0.0 66.709778 89.912621 ]
+/Resources 5 0 R
+/Contents 6 0 R
+/Parent 2 0 R
+>>
+endobj
+5 0 obj
+<<
+>>
+endobj
+6 0 obj
+<<
+/Length 129007
+>>
 stream
 /DeviceRGB CS
 /DeviceRGB cs
@@ -3265,48 +3295,21 @@ Q
 
 endstream
 endobj
-
-3 0 obj
-  125751
-endobj
-
-4 0 obj
-  << /Annots []
-     /Type /Page
-     /MediaBox [ 0.000000 0.000000 66.709778 89.912621 ]
-     /Resources 1 0 R
-     /Contents 2 0 R
-     /Parent 5 0 R
-  >>
-endobj
-
-5 0 obj
-  << /Kids [ 4 0 R ]
-     /Count 1
-     /Type /Pages
-  >>
-endobj
-
-6 0 obj
-  << /Pages 5 0 R
-     /Type /Catalog
-  >>
-endobj
-
 xref
 0 7
-0000000000 65535 f
-0000000010 00000 n
-0000000034 00000 n
-0000125841 00000 n
-0000125866 00000 n
-0000126039 00000 n
-0000126113 00000 n
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000113 00000 n 
+0000000162 00000 n 
+0000000296 00000 n 
+0000000317 00000 n 
 trailer
-<< /ID [ (some) (id) ]
-   /Root 6 0 R
-   /Size 7
+<<
+/Size 7
+/Root 3 0 R
+/Info 1 0 R
 >>
 startxref
-126172
+129378
 %%EOF
